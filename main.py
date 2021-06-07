@@ -10,18 +10,10 @@ class LogIn(QObject):
     @pyqtSlot(str, str, result = str)
     def chooseSoT(self, schoolID, thePassword):
         if (schoolID == '' and thePassword == ''):
-            return '1'
+            return '2'
         else:
             print(schoolID, thePassword)
             return '0'
-
-    """shenj = pyqtSignal(str, arguments = ['chenj'])
-
-    @pyqtSlot()
-    def chenj(self):
-        myName = 'Shan'
-        self.shenj.emit(myName)"""
-
 
 if __name__ == "__main__":
     app = QGuiApplication(sys.argv)
@@ -32,8 +24,6 @@ if __name__ == "__main__":
 
     #Expose the python object to QML
     engine.rootContext().setContextProperty('login', login)
-    """admn = AdminUI()
-    engine.rootContext().setContextProperty('admn', admn)"""
 
     engine.load('qml/logIn.qml')
 
