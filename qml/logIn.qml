@@ -16,8 +16,20 @@ Window {
     flags: Qt.splashScreen | Qt.FramelessWindowHint
 
     function logInChecker() {
-        if (login.chooseSoT(inputLogInSchoolID.text, inputLogInPassword.text)) {
+        if (login.chooseSoT(inputLogInSchoolID.text, inputLogInPassword.text) === '1') {
             var component = Qt.createComponent("admin.qml")
+            var win = component.createObject()
+            win.show()
+            visible = false
+        }
+        else if (login.chooseSoT(inputLogInSchoolID.text, inputLogInPassword.text) === '2') {
+            var component = Qt.createComponent("instructor.qml")
+            var win = component.createObject()
+            win.show()
+            visible = false
+        }
+        else if (login.chooseSoT(inputLogInSchoolID.text, inputLogInPassword.text) === '3') {
+            var component = Qt.createComponent("student.qml")
             var win = component.createObject()
             win.show()
             visible = false

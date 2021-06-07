@@ -7,13 +7,13 @@ class LogIn(QObject):
     def __init__(self):
         QObject.__init__(self)
 
-    @pyqtSlot(str, str, result = bool)
+    @pyqtSlot(str, str, result = str)
     def chooseSoT(self, schoolID, thePassword):
         if (schoolID == '' and thePassword == ''):
-            return True
+            return '1'
         else:
             print(schoolID, thePassword)
-            return False
+            return '0'
 
     """shenj = pyqtSignal(str, arguments = ['chenj'])
 
