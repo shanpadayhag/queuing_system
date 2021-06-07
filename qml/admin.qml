@@ -252,36 +252,80 @@ Window {
                         anchors.right: parent.right
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
+                        clip: false
                         anchors.rightMargin: 0
                         anchors.leftMargin: 0
                         anchors.bottomMargin: 90
                         anchors.topMargin: 0
 
                         LeftMenuBtn {
-                            id: btnHome
+                            id: homeBtn
                             width: leftMenu.width
                             text: qsTr("Home")
                             isActiveMenu: true
+                            onClicked: {
+                                homeBtn.isActiveMenu = true
+                                queueBtn.isActiveMenu = false
+                                addBtn.isActiveMenu = false
+                                removeBtn.isActiveMenu = false
+                                logOutBtn.isActiveMenu = false
+                                stackView.push(Qt.resolvedUrl("pages/admin/home.qml"))
+                            }
+                        }
+
+
+                        LeftMenuBtn {
+                            id: queueBtn
+                            width: leftMenu.width
+                            visible: true
+                            text: qsTr("Home")
+                            btnIconSource: "../imgs/check-square.svg"
+                            isActiveMenu: false
+                            onClicked: {
+                                homeBtn.isActiveMenu = false
+                                queueBtn.isActiveMenu = true
+                                addBtn.isActiveMenu = false
+                                removeBtn.isActiveMenu = false
+                                logOutBtn.isActiveMenu = false
+                                stackView.push(Qt.resolvedUrl("pages/admin/queue.qml"))
+                            }
                         }
 
                         LeftMenuBtn {
-                            id: btnHome1
+                            id: addBtn
                             width: leftMenu.width
-                            text: qsTr("Home")
+                            text: qsTr("Add users")
                             btnIconSource: "../imgs/svg_images/open_icon.svg"
                             isActiveMenu: false
+                            onClicked: {
+                                homeBtn.isActiveMenu = false
+                                queueBtn.isActiveMenu = false
+                                addBtn.isActiveMenu = true
+                                removeBtn.isActiveMenu = false
+                                logOutBtn.isActiveMenu = false
+                                stackView.push(Qt.resolvedUrl("pages/admin/add.qml"))
+                            }
                         }
 
                         LeftMenuBtn {
-                            id: btnHome2
+                            id: removeBtn
                             width: leftMenu.width
-                            text: qsTr("Home")
+                            text: qsTr("Remove users")
                             btnIconSource: "../imgs/svg_images/save_icon.svg"
+                            onClicked: {
+                                homeBtn.isActiveMenu = false
+                                queueBtn.isActiveMenu = false
+                                addBtn.isActiveMenu = false
+                                removeBtn.isActiveMenu = true
+                                logOutBtn.isActiveMenu = false
+                                stackView.push(Qt.resolvedUrl("pages/admin/remove.qml"))
+                            }
                         }
+
                     }
 
                     LeftMenuBtn {
-                        id: btnHome3
+                        id: logOutBtn
                         x: 0
                         y: 180
                         width: leftMenu.width
@@ -289,6 +333,13 @@ Window {
                         anchors.bottom: parent.bottom
                         btnIconSource: "../imgs/log-out.svg"
                         anchors.bottomMargin: 25
+                        onClicked: {
+                            homeBtn.isActiveMenu = false
+                            queueBtn.isActiveMenu = false
+                            addBtn.isActiveMenu = false
+                            removeBtn.isActiveMenu = false
+                            logOutBtn.isActiveMenu = true
+                        }
                     }
                 }
 
@@ -303,6 +354,13 @@ Window {
                     anchors.leftMargin: 0
                     anchors.bottomMargin: 25
                     anchors.topMargin: 0
+
+                    StackView {
+                        id: stackView
+                        anchors.fill: parent
+                        clip: true
+                        initialItem: Qt.resolvedUrl("pages/admin/home.qml")
+                    }
                 }
 
                 Rectangle {
@@ -451,6 +509,6 @@ Window {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:1.1}D{i:29}D{i:28}D{i:32}D{i:36}D{i:38}
+    D{i:0;formeditorZoom:0.75}
 }
 ##^##*/
