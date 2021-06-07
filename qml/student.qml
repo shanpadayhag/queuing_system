@@ -7,7 +7,7 @@ import "components"
 import "controls"
 
 Window {
-    id: studentUI
+    id: adminUI
     width: 1400
     height: 800
     minimumWidth: 800
@@ -25,12 +25,12 @@ Window {
         id: internal
         function maximizeRestore() {
             if (windowStatus == 0) {
-                studentUI.showMaximized()
+                adminUI.showMaximized()
                 windowStatus = 1
                 windowMargin = 0
                 maximize.btnIconSource = "../imgs/svg_images/restore_icon.svg"
             } else {
-                studentUI.showNormal()
+                adminUI.showNormal()
                 windowStatus = 0
                 windowMargin = 10
                 maximize.btnIconSource = "../imgs/svg_images/maximize_icon.svg"
@@ -38,7 +38,7 @@ Window {
         }
         function ifMaximizedWindowRestore() {
             if(windowStatus == 1) {
-                studentUI.showNormal()
+                adminUI.showNormal()
                 windowStatus = 0
                 windowMargin = 10
                 maximize.btnIconSource = "../imgs/svg_images/maximize_icon.svg"
@@ -104,7 +104,7 @@ Window {
                     Label {
                         id: topInfoLabel
                         color: "#576a82"
-                        text: qsTr("Welcome Student")
+                        text: qsTr("Welcome Admin")
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.top: parent.top
@@ -149,7 +149,7 @@ Window {
 
                     DragHandler {
                         onActiveChanged: if (active) {
-                                             studentUI.startSystemMove()
+                                             adminUI.startSystemMove()
                                              internal.ifMaximizedWindowRestore()
                                          }
                     }
@@ -170,7 +170,7 @@ Window {
                     Label {
                         id: titleLabel
                         color: "#c3cbdd"
-                        text: qsTr("Student")
+                        text: qsTr("Admin")
                         anchors.left: appIcon.right
                         anchors.right: parent.right
                         anchors.top: parent.top
@@ -194,7 +194,7 @@ Window {
                     TopBarButton {
                         id: minimize
                         onClicked: {
-                            studentUI.showMinimized()
+                            adminUI.showMinimized()
                             internal.ifMinimizedWindowRestore()
                         }
                     }
@@ -210,7 +210,7 @@ Window {
                         btnColorMouseOver: "#e81123"
                         btnColorClicked: "#f1707a"
                         btnIconSource: "../imgs/svg_images/close_icon.svg"
-                        onClicked: studentUI.close()
+                        onClicked: adminUI.close()
                     }
                 }
             }
@@ -252,36 +252,60 @@ Window {
                         anchors.right: parent.right
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
+                        clip: false
                         anchors.rightMargin: 0
                         anchors.leftMargin: 0
                         anchors.bottomMargin: 90
                         anchors.topMargin: 0
 
                         LeftMenuBtn {
-                            id: btnHome
+                            id: homeBtn
                             width: leftMenu.width
                             text: qsTr("Home")
                             isActiveMenu: true
+                            onClicked: {
+                                homeBtn.isActiveMenu = true
+                                queueBtn.isActiveMenu = false
+                                addBtn.isActiveMenu = false
+                                stackView.push(Qt.resolvedUrl("pages/student/home.qml"))
+                            }
+                        }
+
+
+                        LeftMenuBtn {
+                            id: queueBtn
+                            width: leftMenu.width
+                            visible: true
+                            text: qsTr("Home")
+                            btnIconSource: "../imgs/check-square.svg"
+                            isActiveMenu: false
+                            onClicked: {
+                                homeBtn.isActiveMenu = false
+                                queueBtn.isActiveMenu = true
+                                addBtn.isActiveMenu = false
+                                logOutBtn.isActiveMenu = false
+                                stackView.push(Qt.resolvedUrl("pages/student/appointment.qml"))
+                            }
                         }
 
                         LeftMenuBtn {
-                            id: btnHome1
+                            id: addBtn
                             width: leftMenu.width
-                            text: qsTr("Home")
+                            text: qsTr("Add users")
                             btnIconSource: "../imgs/svg_images/open_icon.svg"
                             isActiveMenu: false
-                        }
-
-                        LeftMenuBtn {
-                            id: btnHome2
-                            width: leftMenu.width
-                            text: qsTr("Home")
-                            btnIconSource: "../imgs/svg_images/save_icon.svg"
+                            onClicked: {
+                                homeBtn.isActiveMenu = false
+                                queueBtn.isActiveMenu = false
+                                addBtn.isActiveMenu = true
+                                logOutBtn.isActiveMenu = false
+                                stackView.push(Qt.resolvedUrl("pages/student/specialServices.qml"))
+                            }
                         }
                     }
 
                     LeftMenuBtn {
-                        id: btnHome3
+                        id: logOutBtn
                         x: 0
                         y: 180
                         width: leftMenu.width
@@ -289,6 +313,9 @@ Window {
                         anchors.bottom: parent.bottom
                         btnIconSource: "../imgs/log-out.svg"
                         anchors.bottomMargin: 25
+                        onClicked: {
+                            adminUI.close()
+                        }
                     }
                 }
 
@@ -307,6 +334,8 @@ Window {
                     StackView {
                         id: stackView
                         anchors.fill: parent
+                        clip: true
+                        initialItem: Qt.resolvedUrl("pages/student/home.qml")
                     }
                 }
 
@@ -325,7 +354,7 @@ Window {
                     Label {
                         id: bottomInfoLabel
                         color: "#576a82"
-                        text: qsTr("Welcome Student")
+                        text: qsTr("Welcome Admin")
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.top: parent.top
@@ -361,7 +390,7 @@ Window {
 
                         DragHandler {
                             target: null
-                            onActiveChanged: if (active) {studentUI.startSystemResize(Qt.RightEdge | Qt.BottomEdge)}
+                            onActiveChanged: if (active) {adminUI.startSystemResize(Qt.RightEdge | Qt.BottomEdge)}
                         }
 
                     }
@@ -394,7 +423,7 @@ Window {
 
         DragHandler {
             target: null
-            onActiveChanged: if (active) {studentUI.startSystemResize(Qt.LeftEdge)}
+            onActiveChanged: if (active) {adminUI.startSystemResize(Qt.LeftEdge)}
         }
     }
 
@@ -411,7 +440,7 @@ Window {
 
         DragHandler {
             target: null
-            onActiveChanged: if (active) {studentUI.startSystemResize(Qt.RightEdge)}
+            onActiveChanged: if (active) {adminUI.startSystemResize(Qt.RightEdge)}
         }
     }
 
@@ -428,7 +457,7 @@ Window {
 
         DragHandler {
             target: null
-            onActiveChanged: if (active) {studentUI.startSystemResize(Qt.BottomEdge)}
+            onActiveChanged: if (active) {adminUI.startSystemResize(Qt.BottomEdge)}
         }
     }
 
@@ -445,7 +474,7 @@ Window {
 
         DragHandler {
             target: null
-            onActiveChanged: if (active) {studentUI.startSystemResize(Qt.TopEdge)}
+            onActiveChanged: if (active) {adminUI.startSystemResize(Qt.TopEdge)}
         }
     }
 }

@@ -299,7 +299,7 @@ Window {
                                 queueBtn.isActiveMenu = false
                                 addBtn.isActiveMenu = true
                                 logOutBtn.isActiveMenu = false
-                                stackView.push(Qt.resolvedUrl("pages/instructor/add.qml"))
+                                stackView.push(Qt.resolvedUrl("pages/instructor/roomReservation.qml"))
                             }
                         }
                     }
@@ -335,7 +335,7 @@ Window {
                         id: stackView
                         anchors.fill: parent
                         clip: true
-                        initialItem: Qt.resolvedUrl("pages/admin/home.qml")
+                        initialItem: Qt.resolvedUrl("pages/instructor/home.qml")
                     }
                 }
 

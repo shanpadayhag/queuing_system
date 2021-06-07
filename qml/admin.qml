@@ -240,7 +240,7 @@ Window {
                         id: animationMenu
                         target: leftMenu
                         property: "width"
-                        to: if (leftMenu.width == 70) return 250; else return 70
+                        to: if (leftMenu.width == 0) return 360; else return 0
                         duration: 1000
                         easing.type: Easing.OutBounce
                     }
@@ -334,7 +334,6 @@ Window {
                     StackView {
                         id: stackView
                         anchors.fill: parent
-                        clip: true
                         initialItem: Qt.resolvedUrl("pages/admin/home.qml")
                     }
                 }

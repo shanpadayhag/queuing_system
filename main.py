@@ -9,8 +9,12 @@ class LogIn(QObject):
 
     @pyqtSlot(str, str, result = str)
     def chooseSoT(self, schoolID, thePassword):
-        if (schoolID == '' and thePassword == ''):
+        if (schoolID == 'admin' and thePassword == ''):
+            return '1'
+        elif (schoolID == 'instructor' and thePassword == ''):
             return '2'
+        elif (schoolID == 'student' and thePassword == ''):
+            return '3'
         else:
             print(schoolID, thePassword)
             return '0'
