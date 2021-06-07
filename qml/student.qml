@@ -303,6 +303,11 @@ Window {
                     anchors.leftMargin: 0
                     anchors.bottomMargin: 25
                     anchors.topMargin: 0
+
+                    StackView {
+                        id: stackView
+                        anchors.fill: parent
+                    }
                 }
 
                 Rectangle {
