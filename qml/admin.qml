@@ -267,8 +267,6 @@ Window {
                                 homeBtn.isActiveMenu = true
                                 queueBtn.isActiveMenu = false
                                 addBtn.isActiveMenu = false
-                                removeBtn.isActiveMenu = false
-                                logOutBtn.isActiveMenu = false
                                 stackView.push(Qt.resolvedUrl("pages/admin/home.qml"))
                             }
                         }
@@ -285,7 +283,6 @@ Window {
                                 homeBtn.isActiveMenu = false
                                 queueBtn.isActiveMenu = true
                                 addBtn.isActiveMenu = false
-                                removeBtn.isActiveMenu = false
                                 logOutBtn.isActiveMenu = false
                                 stackView.push(Qt.resolvedUrl("pages/admin/queue.qml"))
                             }
@@ -301,27 +298,10 @@ Window {
                                 homeBtn.isActiveMenu = false
                                 queueBtn.isActiveMenu = false
                                 addBtn.isActiveMenu = true
-                                removeBtn.isActiveMenu = false
                                 logOutBtn.isActiveMenu = false
                                 stackView.push(Qt.resolvedUrl("pages/admin/add.qml"))
                             }
                         }
-
-                        LeftMenuBtn {
-                            id: removeBtn
-                            width: leftMenu.width
-                            text: qsTr("Remove users")
-                            btnIconSource: "../imgs/svg_images/save_icon.svg"
-                            onClicked: {
-                                homeBtn.isActiveMenu = false
-                                queueBtn.isActiveMenu = false
-                                addBtn.isActiveMenu = false
-                                removeBtn.isActiveMenu = true
-                                logOutBtn.isActiveMenu = false
-                                stackView.push(Qt.resolvedUrl("pages/admin/remove.qml"))
-                            }
-                        }
-
                     }
 
                     LeftMenuBtn {
@@ -334,11 +314,7 @@ Window {
                         btnIconSource: "../imgs/log-out.svg"
                         anchors.bottomMargin: 25
                         onClicked: {
-                            homeBtn.isActiveMenu = false
-                            queueBtn.isActiveMenu = false
-                            addBtn.isActiveMenu = false
-                            removeBtn.isActiveMenu = false
-                            logOutBtn.isActiveMenu = true
+                            adminUI.close()
                         }
                     }
                 }
