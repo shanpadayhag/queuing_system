@@ -21,6 +21,7 @@ class appointment(QObject):
         self.server = None
         self.idText = None
         self.nameText = None
+        # self.sender_email = None
         
     @Slot()
     def getCurrentAccount(self):
@@ -39,7 +40,7 @@ class appointment(QObject):
             self.nameText = x.split(',')[2]
         txtFile.close()
 
-        #self.sender_email = self.idText + "@xu.edu.ph"
+        # self.sender_email = "HiraethDesu@gmail.com" # self.idText + "@xu.edu.ph"
     
     displayClearSignal = Signal()
     displaySignal = Signal(str, str)
@@ -66,23 +67,30 @@ class appointment(QObject):
             
             count += 1
 
-    display_clear_signal = Signal()
     @Slot(int)
     def acceptRequest(self, id):
         self.sqlString = "UPDATE setappointment SET status = 'accepted' WHERE id = %s"
         self.sqlData = (id,)
         self.fromDB.setValues(self.sqlString, self.sqlData)
-        self.display_clear_signal.emit()
 
-        #self.sendMail.sendemail("HiraethDesu@gmail.com", "shanpadayhag@gmail.com", "BOBO", id)
+        self.sqlString = "SELECT name FROM accounts WHERE id = (SELECT account FROM setappointment WHERE id = %s)"
+        self.sqlData = (id,)
+        name = self.fromDB.selectone(self.sqlString, self.sqlData)[0]
+        name = name.split()[0]
+
+        self.sendMail.sendemail_accepted("shanpadayhag@gmail.com", name, id)
 
     @Slot(int)
     def declineRequest(self, id):
         self.sqlString = "UPDATE setappointment SET status = 'declined' WHERE id = %s"
         self.sqlData = (id,)
         self.fromDB.setValues(self.sqlString, self.sqlData)
-        self.display_clear_signal.emit()
 
-        #self.sendMail.sendemail("HiraethDesu@gmail.com", "shanpadayhag@gmail.com", "BOBO", id)
+        self.sqlString = "SELECT name FROM accounts WHERE id = (SELECT account FROM setappointment WHERE id = %s)"
+        self.sqlData = (id,)
+        name = self.fromDB.selectone(self.sqlString, self.sqlData)[0]
+        name = name.split()[0]
+
+        self.sendMail.sendemail_declined("shanpadayhag@gmail.com", name, id)
 
 

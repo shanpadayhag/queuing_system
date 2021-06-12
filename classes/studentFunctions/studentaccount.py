@@ -72,17 +72,23 @@ class details(QObject):
         self.programText = self.fromDB.selectone(self.sqlString, self.sqlData)[0]
         return self.programText
     
-    @Slot(str, str, str, str, str)
+    @Slot(str, str, str, str, str, result=bool)
     def confirm_changes(self, name, id_school, password, imgUrl, program):
-        self.sqlString = "UPDATE accounts a JOIN studentinfo s ON a.id = s.id SET id_school = %s, name = %s, password = %s, program = %s WHERE a.id = %s"
-        self.sqlData = (id_school, name, password, program, self.idText)
-        self.fromDB.setValues(self.sqlString, self.sqlData)
+        try:
+            self.sqlString = "UPDATE accounts a JOIN studentinfo s ON a.id = s.id SET id_school = %s, name = %s, password = %s, program = %s WHERE a.id = %s"
+            self.sqlData = (id_school, name, password, program, self.idText)
+            self.fromDB.setValues(self.sqlString, self.sqlData)
 
-        self.add_img.saveimg(imgUrl.replace("file:///", ""), self.idText)
-        self.add_img.getimg(self.idText)
+            self.add_img.saveimg(imgUrl.replace("file:///", ""), self.idText)
+            self.add_img.getimg(self.idText)
 
-        self.sqlString = "SELECT imgurl FROM accountimg WHERE id = %s"
-        self.sqlData = (self.idText,)
-        self.sqlList = self.fromDB.selectone(self.sqlString, self.sqlData)
-        self.updateTextFile(id_school, name, password, self.typeText, self.sqlList[0])
-        self.getCurrentAccount()
+            self.sqlString = "SELECT imgurl FROM accountimg WHERE id = %s"
+            self.sqlData = (self.idText,)
+            self.sqlList = self.fromDB.selectone(self.sqlString, self.sqlData)
+            self.updateTextFile(id_school, name, password, self.typeText, self.sqlList[0])
+            self.getCurrentAccount()
+
+            return True 
+            
+        except: 
+            return False

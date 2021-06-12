@@ -49,6 +49,31 @@ class main(QObject):
         self.sqlString = "UPDATE instructorinfo SET status = '0' WHERE id = %s"
         self.sqlData = (self.text[0],)
         self.fromDB.setValues(self.sqlString, self.sqlData)
+    
+        self.sqlString = "SELECT programs FROM chairmans WHERE id = %s"
+        self.sqlData = (self.text[0],)
+        self.sqlList = self.fromDB.selectone(self.sqlString, self.sqlData)
+
+        if self.sqlList is not []:
+            if self.sqlList[0] == "CS":
+                self.sqlString = "UPDATE current_queue_on_serve SET CS = %s"
+                self.sqlData = ('None',)
+                self.fromDB.setValues(self.sqlString, self.sqlData)
+
+            elif self.sqlList[0] == "EMC":
+                self.sqlString = "UPDATE current_queue_on_serve SET EMC = %s"
+                self.sqlData = ('None',)
+                self.fromDB.setValues(self.sqlString, self.sqlData)
+
+            elif self.sqlList[0] == "IS":
+                self.sqlString = "UPDATE current_queue_on_serve SET `IS` = %s"
+                self.sqlData = ('None',)
+                self.fromDB.setValues(self.sqlString, self.sqlData)
+
+            elif self.sqlList[0] == "IT":
+                self.sqlString = "UPDATE current_queue_on_serve SET IT = %s"
+                self.sqlData = ('None',)
+                self.fromDB.setValues(self.sqlString, self.sqlData)
 
     @Slot()
     def logout(self):

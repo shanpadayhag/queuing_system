@@ -3,6 +3,15 @@ import QtQuick.Controls 2.15
 import "components"
 
 Item {
+    property int current_index: 0
+
+    function open_pop_up(message) {
+        var component = Qt.createComponent("../../popup/successful.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
+    }
+
     Rectangle {
         opacity: 0.5
         color: "#000000"
@@ -128,9 +137,10 @@ Item {
                     orientation: ListView.Horizontal
                     model: listModel
                     highlightRangeMode: ListView.StrictlyEnforceRange
-                    /*onCurrentIndexChanged: {
-                        console.log(currentIndex)
-                    }*/
+                    highlightMoveDuration: 0
+                    onCurrentIndexChanged: {
+                        current_index = currentIndex
+                    }
                     snapMode: ListView.SnapOneItem
                     Repeater {
                         Loader {
@@ -178,7 +188,14 @@ Item {
                     anchors.horizontalCenterOffset: -100
                     onClicked: {
                         InstructorRequest.acceptRequest(listModel.get(listView.currentIndex).idAppointment)
+                        open_pop_up("Appointment of " + listModel.get(listView.currentIndex).name + " is accepted")
+                        listModel.clear()
                         InstructorRequest.display()
+                        current_index--
+                        if (current_index === -1) {
+                            current_index = 0
+                        }
+                        listView.currentIndex = current_index
                     }
                 }
                 
@@ -194,7 +211,14 @@ Item {
                     anchors.horizontalCenterOffset: 100
                     onClicked: {
                         InstructorRequest.declineRequest(listModel.get(listView.currentIndex).idAppointment)
+                        open_pop_up("Appointment of " + listModel.get(listView.currentIndex).name + " is declined")
+                        listModel.clear()
                         InstructorRequest.display()
+                        current_index--
+                        if (current_index === -1) {
+                            current_index = 0
+                        }
+                        listView.currentIndex = current_index
                     }
                 }
             }
@@ -233,10 +257,5 @@ Item {
         function onDisplaySignal6(index, imgurl) {
             listModel.setProperty(index, "image", imgurl)
         }
-
-        function onDisplayClearSignal() {
-            listModel.clear()
-        }
     }
-    
 }

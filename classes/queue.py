@@ -16,14 +16,14 @@ class number(QObject):
     signalNumber = Signal(int)
     @Slot()
     def getNumber(self):
-        self.sqlString = "SELECT number FROM number"
+        self.sqlString = "SELECT number FROM queue"
         self.sqlList = self.fromDB.selectall(self.sqlString)
         for x in self.sqlList:
             self.signalNumber.emit(int(x[0]))
 
     @Slot(int)
     def incrementNumber(self, number):
-        self.sqlString = "UPDATE number SET number = %s WHERE number = %s"
+        self.sqlString = "UPDATE queue SET number = %s WHERE number = %s"
         self.sqlData = ((number+1), number)
         self.fromDB.setValues(self.sqlString, self.sqlData)
 

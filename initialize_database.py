@@ -19,20 +19,25 @@ class init_db(QObject):
     @Slot()
     def init_db(self):
         try:
+            self.create_schema()
             self.fromDB.start()
             self.fromDB.setup_rooms()
+            self.fromDB.setup_queue()
+            self.fromDB.setup_chairmans()
+            self.fromDB.setup_queue_screen()
         except:
             try:
-                self.create_schema()
                 self.fromDB.start()
                 self.fromDB.setup_rooms()
                 self.fromDB.setup_queue()
                 self.fromDB.setup_chairmans()
+                self.fromDB.setup_queue_screen()
             except:
                 try:
                     self.fromDB.setup_rooms()
                     self.fromDB.setup_queue()
                     self.fromDB.setup_chairmans()
+                    self.fromDB.setup_queue_screen()
                 except:
                     pass
     
@@ -43,7 +48,8 @@ class init_db(QObject):
             passwd='root'
         )
         self.csr = self.conn.cursor()
-        self.csr.execute("CREATE DATABASE computer_studies")
+        self.csr.execute("DROP DATABASE IF EXISTS rappo_project_00")
+        self.csr.execute("CREATE DATABASE rappo_project_00")
         self.csr.close()
         self.conn.close()
 

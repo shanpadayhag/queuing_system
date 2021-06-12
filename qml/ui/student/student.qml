@@ -420,4 +420,73 @@ Window {
             nameUser.text = "Hi, " + name
         }
     }
+
+    MouseArea {
+        id: mouseArea
+        height: 5
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.rightMargin: 0
+        anchors.leftMargin: 0
+        anchors.topMargin: 0
+        cursorShape: Qt.SizeVerCursor
+
+        DragHandler {
+            target: null
+            onActiveChanged: if (active) {window.startSystemResize(Qt.TopEdge)}
+        }
+    }
+
+    MouseArea {
+        id: mouseArea1
+        width: 5
+        height: 5
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: 0
+        anchors.bottomMargin: 0
+        anchors.topMargin: 0
+        cursorShape: Qt.SizeHorCursor
+
+        DragHandler {
+            target: null
+            onActiveChanged: if (active) {window.startSystemResize(Qt.LeftEdge)}
+        }
+    }
+
+    MouseArea {
+        id: mouseArea2
+        width: 5
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.rightMargin: 0
+        anchors.topMargin: 0
+        anchors.bottomMargin: 0
+        cursorShape: Qt.SizeHorCursor
+
+        DragHandler {
+            target: null
+            onActiveChanged: if (active) {window.startSystemResize(Qt.RightEdge)}
+        }
+    }
+
+    MouseArea {
+        id: mouseArea3
+        height: 5
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+        anchors.rightMargin: 0
+        anchors.leftMargin: 0
+        cursorShape: Qt.SizeVerCursor
+
+        DragHandler {
+            target: null
+            onActiveChanged: if (active) {window.startSystemResize(Qt.BottomEdge)}
+        }
+    }
 }

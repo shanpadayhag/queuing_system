@@ -13,48 +13,60 @@ class account(QObject):
         self.sqlData = None
         self.sqlList = None
 
-    @Slot(str, str, str, str)
+    @Slot(str, str, str, str, result=bool)
     def saveToDB(self, name, school_id, program, passcode):
-        school_id = str(int(school_id))
-        name = name.title()
-        self.sqlString = "INSERT INTO accounts (id_school, name, type, password) VALUES (%s, %s, %s, %s)"
-        self.sqlData = (school_id, name, "student", passcode)
-        self.toDB.setValues(self.sqlString, self.sqlData)
+        try:
+            school_id = str(int(school_id))
+            name = name.title()
+            self.sqlString = "INSERT INTO accounts (id_school, name, type, password) VALUES (%s, %s, %s, %s)"
+            self.sqlData = (school_id, name, "student", passcode)
+            self.toDB.setValues(self.sqlString, self.sqlData)
 
-        self.sqlString = "INSERT INTO studentinfo (id, program) VALUES ((SELECT id FROM accounts WHERE id_school = %s), %s)"
-        self.sqlData = (school_id, program)
-        self.toDB.setValues(self.sqlString, self.sqlData)
+            self.sqlString = "INSERT INTO studentinfo (id, program) VALUES ((SELECT id FROM accounts WHERE id_school = %s), %s)"
+            self.sqlData = (school_id, program)
+            self.toDB.setValues(self.sqlString, self.sqlData)
 
-        self.sqlString = "INSERT INTO accountimg (id, img) VALUES ((SELECT id FROM accounts WHERE id_school = %s), %s)"
-        with open(os.path.join(os.getcwd(), r"img/favicon.png"), "rb") as img:
-            BinaryData = img.read()
-        self.sqlData = (school_id, BinaryData)
-        self.toDB.setValues(self.sqlString, self.sqlData)
+            self.sqlString = "INSERT INTO accountimg (id, img) VALUES ((SELECT id FROM accounts WHERE id_school = %s), %s)"
+            with open(os.path.join(os.getcwd(), r"img/favicon.png"), "rb") as img:
+                BinaryData = img.read()
+            self.sqlData = (school_id, BinaryData)
+            self.toDB.setValues(self.sqlString, self.sqlData)
 
-        self.sqlString = "SELECT id FROM accounts WHERE id_school = %s"
-        self.sqlData = (school_id,)
-        self.sqlList = self.toDB.selectone(self.sqlString, self.sqlData)[0]
-        self.get_img.getimg(self.sqlList)
+            self.sqlString = "SELECT id FROM accounts WHERE id_school = %s"
+            self.sqlData = (school_id,)
+            self.sqlList = self.toDB.selectone(self.sqlString, self.sqlData)[0]
+            self.get_img.getimg(self.sqlList)
 
-    @Slot(str, str, str)
+            return True
+
+        except Exception as e:
+            return False
+
+    @Slot(str, str, str, result=bool)
     def saveToDB_v2(self, name, school_id, passcode):
         school_id = str(int(school_id))
         name = name.title()
-        self.sqlString = "INSERT INTO accounts (id_school, name, type, password) VALUES (%s, %s, %s, %s)"
-        self.sqlData = (school_id, name, "instructor", passcode)
-        self.toDB.setValues(self.sqlString, self.sqlData)
+        try:
+            self.sqlString = "INSERT INTO accounts (id_school, name, type, password) VALUES (%s, %s, %s, %s)"
+            self.sqlData = (school_id, name, "instructor", passcode)
+            self.toDB.setValues(self.sqlString, self.sqlData)
 
-        self.sqlString = "INSERT INTO instructorinfo (id) VALUES ((SELECT id FROM accounts WHERE id_school = %s))"
-        self.sqlData = (school_id,)
-        self.toDB.setValues(self.sqlString, self.sqlData)
+            self.sqlString = "INSERT INTO instructorinfo (id) VALUES ((SELECT id FROM accounts WHERE id_school = %s))"
+            self.sqlData = (school_id,)
+            self.toDB.setValues(self.sqlString, self.sqlData)
 
-        self.sqlString = "INSERT INTO accountimg (id, img) VALUES ((SELECT id FROM accounts WHERE id_school = %s), %s)"
-        with open(os.path.join(os.getcwd(), r"img/favicon.png"), "rb") as img:
-            BinaryData = img.read()
-        self.sqlData = (school_id, BinaryData)
-        self.toDB.setValues(self.sqlString, self.sqlData)
+            self.sqlString = "INSERT INTO accountimg (id, img) VALUES ((SELECT id FROM accounts WHERE id_school = %s), %s)"
+            with open(os.path.join(os.getcwd(), r"img/favicon.png"), "rb") as img:
+                BinaryData = img.read()
+            self.sqlData = (school_id, BinaryData)
+            self.toDB.setValues(self.sqlString, self.sqlData)
 
-        self.sqlString = "SELECT id FROM accounts WHERE id_school = %s"
-        self.sqlData = (school_id,)
-        self.sqlList = self.toDB.selectone(self.sqlString, self.sqlData)[0]
-        self.get_img.getimg(self.sqlList)
+            self.sqlString = "SELECT id FROM accounts WHERE id_school = %s"
+            self.sqlData = (school_id,)
+            self.sqlList = self.toDB.selectone(self.sqlString, self.sqlData)[0]
+            self.get_img.getimg(self.sqlList)
+
+            return True
+            
+        except Exception as e:
+            return False

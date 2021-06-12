@@ -27,6 +27,20 @@ Item {
         returneeListView.currentIndex = indexSelectedReturnee
     }
 
+    function success_pop_up(message) {
+        var component = Qt.createComponent("../../popup/successful.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
+    }
+
+    function error_pop_up(message) {
+        var component = Qt.createComponent("../../popup/error.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
+    }
+
     Timer {
         id: timer
 
@@ -259,6 +273,7 @@ Item {
                             InstructorHome.returnKey()
                             returneeListModel.clear()
                             InstructorHome.displayRequests()
+                            success_pop_up("Request to return key successful")
                         }
                     }
                 }

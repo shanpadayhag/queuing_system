@@ -83,14 +83,25 @@ Window {
             }
         } else {
             if (passwordText.text === confirmPasswordText.text) {
-                CreateAccount.saveToDB(nameText.text, idText.text, programText.text, passwordText.text)
-                qmlConnections.openWindow("login")
-                window.destroy()
+                if (CreateAccount.saveToDB(nameText.text, idText.text, programText.text, passwordText.text)) {
+                    Login.pop_up("Account created successfully!")
+                    window.destroy()
+                } else {
+                    pop_up_error("School ID already exists")
+                    idText.color = "#EF534F"
+                }
             } else {
                 passwordText.color = "#EF534F"
                 confirmPasswordText.color = "#EF534F"
             }
         }
+    }
+
+    function pop_up_error(message) {
+        var component = Qt.createComponent("../popup/error.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
     }
 
     Rectangle {
@@ -165,6 +176,9 @@ Window {
                 anchors.horizontalCenter: parent.horizontalCenter
                 placeholderText: "Full Name"
                 font.pixelSize: 13
+                onTextChanged: {
+                    nameText.color = "#ffffff"
+                }
                 onAccepted: create_account()
                 onPressed: {
                     textFieldChoice = 0
@@ -201,6 +215,7 @@ Window {
                     programText.color = "#FFFFFF"
                     passwordText.color = "#FFFFFF"
                     confirmPasswordText.color = "#FFFFFF"
+                    idText.text = ""
                 }
                 onActiveFocusChanged: {
                     nameText.color = "#FFFFFF"
@@ -208,6 +223,9 @@ Window {
                     programText.color = "#FFFFFF"
                     passwordText.color = "#FFFFFF"
                     confirmPasswordText.color = "#FFFFFF"
+                }
+                onTextChanged: {
+                    idText.color = "#ffffff"
                 }
             }
             
@@ -226,6 +244,9 @@ Window {
                     programText.color = "#FFFFFF"
                     passwordText.color = "#FFFFFF"
                     confirmPasswordText.color = "#FFFFFF"
+                }
+                onTextChanged: {
+                    programText.color = "#ffffff"
                 }
             }
 
@@ -267,6 +288,10 @@ Window {
                     confirmPasswordText.color = "#FFFFFF"
                 }
                 onAccepted: create_account()
+                onTextChanged: {
+                    passwordText.color = "#ffffff"
+                    confirmPasswordText.color = "#ffffff"
+                }
 
                 Rectangle {
                     width: 15
@@ -319,6 +344,10 @@ Window {
                     confirmPasswordText.color = "#FFFFFF"
                 }
                 onAccepted: create_account()
+                onTextChanged: {
+                    passwordText.color = "#ffffff"
+                    confirmPasswordText.color = "#ffffff"
+                }
             }
 
             CustomButton {

@@ -32,6 +32,20 @@ Item {
             svgBtn.svgSource = "../../../../img/icon/eyeOff.svg"
         }
     }
+
+    function success_pop_up(message) {
+        var component = Qt.createComponent("../../popup/successful.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
+    }
+
+    function error_pop_up(message) {
+        var component = Qt.createComponent("../../popup/error.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
+    }
     
     Rectangle {
         anchors.fill: parent
@@ -342,12 +356,17 @@ Item {
                 font.pixelSize: 13
                 anchors.topMargin: 20
                 onClicked: {
-                    StudentDetails.confirm_changes(editNameText.text, editIDText.text, editPasswordText.text, image1.source, editProgramText.text)
-                    addAnimationMenu.running = true
-                    StudentDetails.getCurrentAccount()
-                    accountName.text = StudentDetails.getName()
-                    accountID.text = StudentDetails.getID()
-                    image.source = image1.source
+                    if (StudentDetails.confirm_changes(editNameText.text, editIDText.text, editPasswordText.text, image1.source, editProgramText.text)) {
+                        addAnimationMenu.running = true
+                        StudentDetails.getCurrentAccount()
+                        accountName.text = StudentDetails.getName()
+                        accountID.text = StudentDetails.getID()
+                        image.source = image1.source
+                        success_pop_up("Changes are confirmed")
+                    } else {
+                        editIDText.color = "#EF534F"
+                        error_pop_up("School ID is already taken")
+                    }
                 }
             }
             

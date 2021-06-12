@@ -32,7 +32,7 @@ class save_img(QObject):
         except FileExistsError:
             print("File already exists")
 
-        self.sqlString = "SELECT * FROM accountimg"
+        self.sqlString = "SELECT id FROM accountimg"
         self.sqlList = self.fromDB.selectall(self.sqlString)
         for x in self.sqlList:
             self.get_img.getimg(x[0])

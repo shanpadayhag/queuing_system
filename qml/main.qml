@@ -148,7 +148,7 @@ Window {
 
     Component.onCompleted: {
         SplashScreen.keepMeLoggedIn()
-        // timer.startTimer(done, 6000)
-        timer.startTimer(done, 0)
+        timer.startTimer(done, 6000)
+        // timer.startTimer(done, 0)
     }
 }

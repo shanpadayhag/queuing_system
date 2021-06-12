@@ -6,7 +6,22 @@ Item {
 
     property string dateChosen: ""
     property string timeChosen: customTimer.theHour + ":" + customTimer.theMinute
+    property real listViewWidth: instructor_scrollView.width
     property var indexSelected: 0
+    
+    function listViewLongestWidth(itemWidth) {
+        if (itemWidth > listViewWidth) {
+            listViewWidth = itemWidth
+        }
+    }
+    
+    function highlightLength(itemWidth) {
+        if (itemWidth > instructor_scrollView.width) {
+            return itemWidth
+        } else {
+            return instructor_scrollView.width
+        }
+    }
 
     function statusChecker(value) {
         if (value === 1) {
@@ -19,7 +34,7 @@ Item {
     }
 
     function refresh() {
-        AdminSetAppointment.refresh_index(indexSelected, instructorListModel.get(indexSelected).idAcc)
+        StudentAppointment.refresh_index(indexSelected, instructorListModel.get(indexSelected).idAcc)
     }
 
     function display_about() {
@@ -29,8 +44,21 @@ Item {
             statusChecker(instructorListModel.get(indexSelected).status)
             nameLabel.text = instructorListModel.get(indexSelected).name
             courseListModel.clear()
-            AdminSetAppointment.displayCourses(instructorListModel.get(indexSelected).idAcc)
+            StudentAppointment.displayCourses(instructorListModel.get(indexSelected).idAcc)
         } catch(err){}
+    }
+
+    function set_appointment() {
+        if (StudentAppointment.setAppointment(dateChosen, timeChosen, reasonText.text, instructorListModel.get(instructorListView.currentIndex).idAcc)) {
+            open_pop_up("Appointment Set")
+        }
+    }
+
+    function open_pop_up(message) {
+        var component = Qt.createComponent("../../popup/successful.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
     }
 
     Timer {
@@ -108,6 +136,7 @@ Item {
                 color: "#111d2b"
 
                 ScrollView {
+                    id: instructor_scrollView
                     anchors.top: parent.top
                     anchors.topMargin: 10
                     anchors.left: parent.left
@@ -116,6 +145,7 @@ Item {
                     anchors.rightMargin: 10
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 10
+                    contentWidth: listViewWidth
                     clip: true
 
                     ListModel {
@@ -126,7 +156,7 @@ Item {
                         id: instructorDelegate
                         
                         Item {
-                            width: instructorListView.width
+                            width: highlightLength(10 + instructorName.width + 10)
                             height: 25
 
                             Label {
@@ -148,6 +178,7 @@ Item {
                                     display_about()
                                 }
                             }
+                            Component.onCompleted: listViewLongestWidth(10 + instructorName.width + 10)
                         }
                     }
 
@@ -166,7 +197,7 @@ Item {
 
                         Component.onCompleted: {
                             instructorListModel.clear()
-                            AdminSetAppointment.displayInstructors()
+                            StudentAppointment.displayInstructors()
                             display_about()
                             timer.startTimer(refresh, 1000)
                         }
@@ -192,7 +223,7 @@ Item {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: parent.top
-                height: 476
+                height: rectangle8.height + rectangle6.height + 25
                 radius: 10
                 color: "#58697e"
 
@@ -225,8 +256,7 @@ Item {
                     anchors.right: parent.right
                     anchors.rightMargin: 10
                     anchors.top: rectangle8.bottom
-                    anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 10
+                    height: image.height + statusLabel.height + nameLabel.height + rectangle.height + 100
                     anchors.topMargin: 5
                     color: "#111d2b"
                     radius: 10
@@ -267,7 +297,7 @@ Item {
                         id: label4
                         anchors.left: parent.left
                         anchors.leftMargin: 20
-                        anchors.top: label3.bottom
+                        anchors.top: nameLabel.bottom
                         anchors.topMargin: 20
                         color: "#ffffff"
                         text: "Courses handled:"
@@ -280,18 +310,21 @@ Item {
                         anchors.left: label2.right
                         anchors.leftMargin: 5
                         color: "#ffffff"
-                        text: "SUPER POGI"
+                        text: "Loading..."
                         font.pixelSize: 13
                     }
 
                     Label {
                         id: nameLabel
-                        anchors.verticalCenter: label3.verticalCenter
+                        anchors.top: label3.top
                         anchors.left: label3.right
                         anchors.leftMargin: 5
+                        anchors.right: parent.right
+                        anchors.rightMargin: 5
                         color: "#ffffff"
-                        text: "SHAN"
+                        text: "Loading..."
                         font.pixelSize: 13
+                        wrapMode: Text.Wrap
                     }
 
                     Rectangle {
@@ -302,11 +335,10 @@ Item {
                         anchors.left: label4.right
                         anchors.right: parent.right
                         anchors.top: label4.top
-                        anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 20
                         anchors.rightMargin: 20
                         anchors.leftMargin: 10
                         anchors.topMargin: 0
+                        height: 130
                         clip: true
                 
                         ScrollView {
@@ -449,7 +481,7 @@ Item {
                         font.letterSpacing: 0.2
                         font.bold: true
                         font.pixelSize: 13
-                        onClicked: StudentAppointment.setAppointment(dateChosen, timeChosen, reasonText.text, instructorListModel.get(instructorListView.currentIndex).idAcc)
+                        onClicked: set_appointment()
                     }
                 }
             }
@@ -465,6 +497,10 @@ Item {
             instructorListModel.append({"name": name, "idAcc": id, "status": 2, "img": ""})
         }
 
+        function onDisplayInstructorSignal_v2(name, id) {
+            instructorListModel.append({"name": name, "idAcc": id, "status": 2, "img": ""})
+        }
+
         function onDisplayInstructorSignal2(index, status) {
             instructorListModel.setProperty(index, "status", status)
         }
@@ -475,6 +511,11 @@ Item {
 
         function onDisplayInstructorSignal3(index, imgurl) {
             instructorListModel.setProperty(index, "img", imgurl)
+        }
+
+        function onRefresh_index_signal(index, status) {
+            instructorListModel.setProperty(index, "status", status)
+            statusChecker(instructorListModel.get(index).status)
         }
     }
 }

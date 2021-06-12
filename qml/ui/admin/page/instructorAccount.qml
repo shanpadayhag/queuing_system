@@ -23,19 +23,29 @@ Item {
     }
 
     function addInstructorFunction() {
-        AdminInstructor.addInstructor(addInstructorID.text, addInstructorName.text)
-        listModel.clear()
-        AdminInstructor.display()
-        addInstructorName.text = ""
-        addInstructorID.text = ""
-        removeName.text = listModel.get(0).name
-        removeID.text = listModel.get(0).school_id
-        editName.text = listModel.get(0).name
-        editID.text = listModel.get(0).school_id
+        if (AdminInstructor.addInstructor(addInstructorID.text, addInstructorName.text)) {
+            listModel.clear()
+            AdminInstructor.display()
+            addInstructorName.text = ""
+            addInstructorID.text = ""
+            removeName.text = listModel.get(0).name
+            removeID.text = listModel.get(0).school_id
+            editName.text = listModel.get(0).name
+            editID.text = listModel.get(0).school_id
+            success_pop_up("Student added successfully")
+        } else {
+            error_pop_up("School ID is already taken")
+            addInstructorID.color = "#EF534F"
+        }
     }
 
     function removeInstructorFunction() {
-        AdminInstructor.removeInstructor(listModel.get(listView.currentIndex).account_id)
+        console.log(listModel.get(listView.currentIndex).account_id)
+        if (AdminInstructor.removeInstructor(listModel.get(listView.currentIndex).account_id)) {
+            success_pop_up("Student removed successfully")
+        } else {
+            error_pop_up("Account already cease to exist")
+        }
         listModel.clear()
         AdminInstructor.display()
         try {
@@ -52,12 +62,31 @@ Item {
     }
 
     function editInstructorFunction() {
-        AdminInstructor.editInstructor(listModel.get(listView.currentIndex).account_id, editID.text, editName.text)
-        listModel.clear()
-        AdminInstructor.display()
-        listView.currentIndex = indexSelected
-        removeName.text = editName.text
-        removeID.text = editID.text
+        if (AdminInstructor.editInstructor(listModel.get(listView.currentIndex).account_id, editID.text, editName.text)) {
+            listModel.clear()
+            AdminInstructor.display()
+            listView.currentIndex = indexSelected
+            removeName.text = editName.text
+            removeID.text = editID.text
+            success_pop_up("Student edited successfully")
+        } else {
+            editID.color = "#EF534F"
+            error_pop_up("School ID is already taken")
+        }
+    }
+
+    function success_pop_up(message) {
+        var component = Qt.createComponent("../../popup/successful.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
+    }
+
+    function error_pop_up(message) {
+        var component = Qt.createComponent("../../popup/error.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
     }
     
     Rectangle {
@@ -298,7 +327,7 @@ Item {
                         anchors.leftMargin: 20
                         anchors.topMargin: 10
                         validator: RegExpValidator{regExp: /[0-9]+/}
-                        onPressed: fieldSelected = 1
+                        onPressed: fieldSelected = 1, addInstructorID.color = "#FFFFFF"
                     }
 
                     CustomButton {
@@ -480,7 +509,7 @@ Item {
                         placeholderText: "Instructor school ID"
                         font.pixelSize: 13
                         validator: RegExpValidator{regExp: /[0-9]+/}
-                        onPressed: fieldSelected = 3
+                        onPressed: fieldSelected = 3, editID.color = "#FFFFFF"
                     }
 
                     CustomButton {

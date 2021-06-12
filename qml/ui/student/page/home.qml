@@ -4,6 +4,20 @@ import "components"
 
 Item {
 
+    function success_pop_up(message) {
+        var component = Qt.createComponent("../../popup/successful.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
+    }
+
+    function error_pop_up(message) {
+        var component = Qt.createComponent("../../popup/error.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
+    }
+
     Rectangle {
         id: rect
         anchors.fill: parent
@@ -86,6 +100,7 @@ Item {
                         anchors.horizontalCenter: parent.horizontalCenter
                         onClicked: {
                             StudentHome.returnKey()
+                            success_pop_up("Request to return key successful")
                         }
                     }
                 }

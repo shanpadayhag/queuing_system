@@ -16,6 +16,13 @@ Window {
     property string number: ""
     property int currentValue: 0
 
+    function get_queue() {
+        QueueNumber.saveReport(queueNumberText.text)
+        QueueNumber.incrementNumber(currentValue)
+        Login.pop_up(queueNumberText.text + " is your queue number")
+        window.destroy()
+    }
+
     Rectangle {
         id: rectangle
         color: "#0b131c"
@@ -343,12 +350,7 @@ Window {
                     text: "Confirm"
                     font.bold: true
                     font.pixelSize: 13
-                    onClicked: {
-                        QueueNumber.saveReport(queueNumberText.text)
-                        QueueNumber.incrementNumber(currentValue)
-                        qmlConnections.openWindow("login")
-                        window.destroy()
-                    }
+                    onClicked: get_queue()
                 }
             }
         }
@@ -357,7 +359,7 @@ Window {
     Shortcut {
         sequence: "Escape"
         onActivated: {
-            qmlConnections.openWindow("login")
+            Login.queue_pop_up_login()
             window.destroy()
         }
     }

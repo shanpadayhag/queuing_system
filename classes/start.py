@@ -21,11 +21,11 @@ class start:
         self.set_icons()
     
     def load_ui(self):
-        self.engine.load(os.path.join(os.getcwd(), "qml/main.qml"))
-        self.engine.load(os.path.join(os.getcwd(), "qml/ui/login/login.qml"))
-        self.engine.load(os.path.join(os.getcwd(), "qml/ui/admin/admin.qml"))
-        self.engine.load(os.path.join(os.getcwd(), "qml/ui/student/student.qml"))
-        self.engine.load(os.path.join(os.getcwd(), "qml/ui/instructor/instructor.qml"))
+        self.engine.load(os.path.join(os.getcwd(), r"qml/main.qml"))
+        self.engine.load(os.path.join(os.getcwd(), r"qml/ui/login/login.qml"))
+        self.engine.load(os.path.join(os.getcwd(), r"qml/ui/admin/admin.qml"))
+        self.engine.load(os.path.join(os.getcwd(), r"qml/ui/student/student.qml"))
+        self.engine.load(os.path.join(os.getcwd(), r"qml/ui/instructor/instructor.qml"))
 
         if not self.engine.rootObjects():
             sys.exit(-1)
@@ -139,7 +139,7 @@ class start:
         self.login_context()
 
     def set_icons(self):
-        app_icon_dir = os.path.join(os.getcwd(), "app_icon/16x16.png")
+        app_icon_dir = os.path.join(os.getcwd(), r"app_icon/16x16.png")
         self.app_icon.addFile(app_icon_dir, QSize(16, 16))
         self.app_icon.addFile(app_icon_dir, QSize(24, 24))
         self.app_icon.addFile(app_icon_dir, QSize(32, 32))

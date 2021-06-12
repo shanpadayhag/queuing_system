@@ -33,7 +33,7 @@ class service(QObject):
     displaySignal2 = Signal(int, int)
     @Slot()
     def display(self):
-        self.sqlString = "SELECT id, servicetitle, servicemessage FROM serviceoffered WHERE instructor = " + self.idText + " AND accepted = '0'"
+        self.sqlString = "SELECT id, servicetitle, servicemessage FROM serviceoffered WHERE instructor = " + self.idText + " AND accepted = '0' ORDER BY id DESC"
         self.sqlList = self.fromDB.selectall(self.sqlString)
         count = 0
         for x in self.sqlList:

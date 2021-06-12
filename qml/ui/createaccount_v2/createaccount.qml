@@ -32,6 +32,58 @@ Window {
             svgBtn.overlayColor = "#4891d9"
         }
     }
+    
+    function create_account() {
+        if (
+            passwordText.text === "" || 
+            nameText.text === "" || 
+            idText.text === "" ||
+            idText.text === "Enter your id" || 
+            /\d/.test(nameText.text)
+            ) {
+            if (nameText.text === "") {
+                nameText.text = "Enter your name"
+                nameText.color = "#EF534F"
+            }
+            if (idText.text === "Enter your id") {
+                idText.text = "Please enter an integer"
+                idText.color = "#EF534F"
+            }
+            if (idText.text === "") {
+                idText.text = "Enter your id"
+                idText.color = "#EF534F"
+            }
+            if (passwordText.text === "") {
+                showPassword()
+                passwordText.text = "Enter your password"
+                passwordText.color = "#EF534F"
+            }
+            if (/\d/.test(nameText.text)) {
+                nameText.text = "There are no numbers in your name desu?"
+                nameText.color = "#EF534F"
+            }
+        } else {
+            if (passwordText.text === confirmPasswordText.text) {
+                if (CreateAccount.saveToDB_v2(nameText.text, idText.text, passwordText.text)) {
+                    Login.pop_up("Account created successfully!")
+                    window.destroy()
+                } else {
+                    pop_up_error("School ID already exists")
+                    idText.color = "#EF534F"
+                }
+            } else {
+                passwordText.color = "#EF534F"
+                confirmPasswordText.color = "#EF534F"
+            }
+        }
+    }
+    
+    function pop_up_error(message) {
+        var component = Qt.createComponent("../popup/error.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
+    }
 
     Rectangle {
         anchors.fill: parent
@@ -105,17 +157,20 @@ Window {
                 anchors.horizontalCenter: parent.horizontalCenter
                 placeholderText: "Full Name"
                 font.pixelSize: 13
-                onAccepted: {
-                    if (passwordText.text === confirmPasswordText.text) {
-                        CreateAccount.saveToDB_v2(nameText.text, idText.text, passwordText.text)
-                        qmlConnections.openWindow("login")
-                        window.destroy()
-                    } else {
-                        passwordText.color = "#EF534F"
-                        confirmPasswordText.color = "#EF534F"
-                    }
+                onAccepted: create_account()
+                onPressed: {
+                    textFieldChoice = 0
+                    nameText.color = "#FFFFFF"
+                    idText.color = "#FFFFFF"
+                    passwordText.color = "#FFFFFF"
+                    confirmPasswordText.color = "#FFFFFF"
                 }
-                onPressed: textFieldChoice = 0
+                onActiveFocusChanged: {
+                    nameText.color = "#FFFFFF"
+                    idText.color = "#FFFFFF"
+                    passwordText.color = "#FFFFFF"
+                    confirmPasswordText.color = "#FFFFFF"
+                }
 
                 Component.onCompleted: nameText.forceActiveFocus()
             }
@@ -129,7 +184,19 @@ Window {
                 placeholderText: "School ID"
                 font.pixelSize: 13
                 validator: RegExpValidator{regExp: /[0-9]+/}
-                onPressed: textFieldChoice = 1
+                onPressed: {
+                    textFieldChoice = 1
+                    nameText.color = "#FFFFFF"
+                    idText.color = "#FFFFFF"
+                    passwordText.color = "#FFFFFF"
+                    confirmPasswordText.color = "#FFFFFF"
+                }
+                onActiveFocusChanged: {
+                    nameText.color = "#FFFFFF"
+                    idText.color = "#FFFFFF"
+                    passwordText.color = "#FFFFFF"
+                    confirmPasswordText.color = "#FFFFFF"
+                }
             }
             
             CustomTextField {
@@ -141,17 +208,20 @@ Window {
                 placeholderText: "Password"
                 font.pixelSize: 13
                 echoMode: TextInput.Password
-                onPressed: passwordText.color = "white", confirmPasswordText.color = "white", textFieldChoice = 2
-                onAccepted: {
-                    if (passwordText.text === confirmPasswordText.text) {
-                        CreateAccount.saveToDB_v2(nameText.text, idText.text, passwordText.text)
-                        qmlConnections.openWindow("login")
-                        window.destroy()
-                    } else {
-                        passwordText.color = "#EF534F"
-                        confirmPasswordText.color = "#EF534F"
-                    }
+                onPressed: {
+                    textFieldChoice = 2
+                    nameText.color = "#FFFFFF"
+                    idText.color = "#FFFFFF"
+                    passwordText.color = "#FFFFFF"
+                    confirmPasswordText.color = "#FFFFFF"
                 }
+                onActiveFocusChanged: {
+                    nameText.color = "#FFFFFF"
+                    idText.color = "#FFFFFF"
+                    passwordText.color = "#FFFFFF"
+                    confirmPasswordText.color = "#FFFFFF"
+                }
+                onAccepted: create_account()
 
                 Rectangle {
                     width: 15
@@ -188,17 +258,20 @@ Window {
                 placeholderText: "Confirm Password"
                 font.pixelSize: 13
                 echoMode: TextInput.Password
-                onPressed: passwordText.color = "white", confirmPasswordText.color = "white", textFieldChoice = 3
-                onAccepted: {
-                    if (passwordText.text === confirmPasswordText.text) {
-                        CreateAccount.saveToDB_v2(nameText.text, idText.text, passwordText.text)
-                        qmlConnections.openWindow("login")
-                        window.destroy()
-                    } else {
-                        passwordText.color = "#EF534F"
-                        confirmPasswordText.color = "#EF534F"
-                    }
+                onPressed: {
+                    textFieldChoice = 3
+                    nameText.color = "#FFFFFF"
+                    idText.color = "#FFFFFF"
+                    passwordText.color = "#FFFFFF"
+                    confirmPasswordText.color = "#FFFFFF"
                 }
+                onActiveFocusChanged: {
+                    nameText.color = "#FFFFFF"
+                    idText.color = "#FFFFFF"
+                    passwordText.color = "#FFFFFF"
+                    confirmPasswordText.color = "#FFFFFF"
+                }
+                onAccepted: create_account()
             }
 
             CustomButton {
@@ -211,16 +284,7 @@ Window {
                 text: "Create Account"
                 font.pixelSize: 13
                 font.bold: true
-                onClicked: {
-                    if (passwordText.text === confirmPasswordText.text) {
-                        CreateAccount.saveToDB_v2(nameText.text, idText.text, passwordText.text)
-                        qmlConnections.openWindow("login")
-                        window.destroy()
-                    } else {
-                        passwordText.color = "#EF534F"
-                        confirmPasswordText.color = "#EF534F"
-                    }
-                }
+                onClicked: create_account()
             }
         }
     }
@@ -236,6 +300,11 @@ Window {
             qmlConnections.openWindow("login")
             window.destroy()
         }
+    }
+
+    Shortcut {
+        sequence: "Ctrl+Shift+C"
+        onActivated: create_account()
     }
 
     Shortcut {

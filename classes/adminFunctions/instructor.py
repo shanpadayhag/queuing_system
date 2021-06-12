@@ -26,45 +26,59 @@ class instructor(QObject):
 
             count += 1
     
-    @Slot(str, str)
+    @Slot(str, str, result=bool)
     def addInstructor(self, school_id, name):
-        school_id = str(int(school_id))
-        self.sqlString = "INSERT INTO accounts (id_school, name, type) VALUES (%s, %s, 'instructor')"
-        self.sqlData = (school_id, name.title())
-        self.fromDB.setValues(self.sqlString, self.sqlData)
+        try:
+            school_id = str(int(school_id))
+            self.sqlString = "INSERT INTO accounts (id_school, name, type) VALUES (%s, %s, 'instructor')"
+            self.sqlData = (school_id, name.title())
+            self.fromDB.setValues(self.sqlString, self.sqlData)
 
-        self.sqlString = "INSERT INTO instructorinfo (id) VALUES ((SELECT id FROM accounts WHERE id_school = %s))"
-        self.sqlData = (school_id,)
-        self.fromDB.setValues(self.sqlString, self.sqlData)
+            self.sqlString = "INSERT INTO instructorinfo (id) VALUES ((SELECT id FROM accounts WHERE id_school = %s))"
+            self.sqlData = (school_id,)
+            self.fromDB.setValues(self.sqlString, self.sqlData)
 
-        self.sqlString = "INSERT INTO accountimg (id, img) VALUES ((SELECT id FROM accounts WHERE id_school = %s), %s)"
-        with open(os.path.join(os.getcwd(), "img/favicon.png"), "rb") as img:
-            binary_data = img.read()
-        self.sqlData = (school_id, binary_data)
-        self.fromDB.setValues(self.sqlString, self.sqlData)
+            self.sqlString = "INSERT INTO accountimg (id, img) VALUES ((SELECT id FROM accounts WHERE id_school = %s), %s)"
+            with open(os.path.join(os.getcwd(), "img/favicon.png"), "rb") as img:
+                binary_data = img.read()
+            self.sqlData = (school_id, binary_data)
+            self.fromDB.setValues(self.sqlString, self.sqlData)
 
-        self.sqlString = "SELECT id FROM accounts WHERE id_school = %s"
-        self.sqlData = (school_id,)
-        self.sqlList = self.fromDB.selectone(self.sqlString, self.sqlData)[0]
-        self.get_img.getimg(self.sqlList)
+            self.sqlString = "SELECT id FROM accounts WHERE id_school = %s"
+            self.sqlData = (school_id,)
+            self.sqlList = self.fromDB.selectone(self.sqlString, self.sqlData)[0]
+            self.get_img.getimg(self.sqlList)
 
-    @Slot(str)
+            return True 
+
+        except:
+            return False
+
+    @Slot(str, result=bool)
     def removeInstructor(self, id):
-        self.sqlString = "DELETE FROM accountimg WHERE id = %s"
-        self.sqlData = (id,)
-        self.fromDB.setValues(self.sqlString, self.sqlData)
+        try:
+            self.sqlString = "DELETE FROM accounts WHERE id = %s"
+            self.sqlData = (id,)
+            self.fromDB.setValues(self.sqlString, self.sqlData)
+            
+            self.sqlString = "DELETE FROM accountimg WHERE id = %s"
+            self.sqlData = (id,)
+            self.fromDB.setValues(self.sqlString, self.sqlData)
 
-        self.sqlString = "DELETE FROM instructorinfo WHERE id = %s"
-        self.sqlData = (id,)
-        self.fromDB.setValues(self.sqlString, self.sqlData)
+            return True 
+            
+        except:
+            return False
 
-        self.sqlString = "DELETE FROM accounts WHERE id = %s"
-        self.sqlData = (id,)
-        self.fromDB.setValues(self.sqlString, self.sqlData)
-
-    @Slot(str, str, str)
+    @Slot(str, str, str, result=bool)
     def editInstructor(self, id, school_id, name):
-        school_id = str(int(school_id))
-        self.sqlString = "UPDATE accounts a JOIN instructorinfo i ON a.id = i.id SET id_school = %s, name = %s WHERE a.id = %s"
-        self.sqlData = (school_id, name, id)
-        self.fromDB.setValues (self.sqlString, self.sqlData)
+        try:
+            school_id = str(int(school_id))
+            self.sqlString = "UPDATE accounts a JOIN instructorinfo i ON a.id = i.id SET id_school = %s, name = %s WHERE a.id = %s"
+            self.sqlData = (school_id, name, id)
+            self.fromDB.setValues (self.sqlString, self.sqlData)
+
+            return True 
+            
+        except:
+            return False

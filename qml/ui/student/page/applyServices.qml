@@ -28,6 +28,13 @@ Item {
         listView.currentIndex = indexSelected
     }
 
+    function open_pop_up(message) {
+        var component = Qt.createComponent("../../popup/successful.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
+    }
+
     Timer {
         id: timer
 
@@ -188,6 +195,7 @@ Item {
                     StudentApplyService.acceptService(listModel.get(listView.currentIndex).idService)
                     listModel.clear()
                     StudentApplyService.display()
+                    open_pop_up("Service accepted")
                 }
             }
         }

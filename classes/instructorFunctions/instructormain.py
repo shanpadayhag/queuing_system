@@ -61,8 +61,8 @@ class main(QObject):
     def logout(self):
         txtString = ",,,,,,"
         txtLocationAndName = os.path.join(
-            os.path.dirname(__file__), 
-            r"../../texts/fileDirectoryText.txt"
+            os.getcwd(), 
+            r"texts/fileDirectoryText.txt"
         )
         txtFile = open(
             txtLocationAndName, 

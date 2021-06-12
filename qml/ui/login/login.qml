@@ -8,7 +8,7 @@ import "../"
 Window {
     id: window
     width: 750 //791 //744
-    height: 454
+    height: 425 // 454
     visible: false
     title: "Shan Pogi"
     color: "transparent"
@@ -27,6 +27,8 @@ Window {
 
         if (returnValue === 0) {
             window.visible = false
+            idText.text = ""
+            passwordText.text = ""
             qmlConnections.setUIName()
         } else {
             if (returnValue === 2) {
@@ -56,7 +58,6 @@ Window {
         // var component = Qt.createComponent("../createaccount_v2/createaccount.qml")
         var win = component.createObject()
         win.show()
-        visible = true
     }
 
     function openCreate_v2() {
@@ -64,14 +65,35 @@ Window {
         var component = Qt.createComponent("../createaccount_v2/createaccount.qml")
         var win = component.createObject()
         win.show()
-        visible = true
     }
 
     function openQueue() {
         var component = Qt.createComponent("../queuenumber/queuenumber.qml")
         var win = component.createObject()
         win.show()
-        visible = true
+    }
+
+    function open_pop_up(message) {
+        var component = Qt.createComponent("../popup/successful.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
+    }
+
+    Timer {
+        id: timer
+
+        function startTimer(callback, milliseconds) {
+            timer.interval = milliseconds;
+            timer.repeat = false;
+            timer.triggered.connect(callback);
+            timer.start();
+        }
+
+        function stopTimer(callback) {
+            timer.stop();
+            timer.triggered.disconnect(callback);
+        }
     }
 
     Rectangle {
@@ -89,6 +111,7 @@ Window {
         Image {
             anchors.fill: parent
             source: "../../../img/background/loginBG1.svg"
+            
         }
 
         TopBarButton {
@@ -110,8 +133,7 @@ Window {
             source: "../../../img/logo/ComStud_Logo.png"
             anchors.left: parent.left
             anchors.leftMargin: 60
-            anchors.top: parent.top
-            anchors.topMargin: 85
+            anchors.verticalCenter: parent.verticalCenter
         }
 
         Rectangle {
@@ -205,7 +227,9 @@ Window {
                 anchors.top: passwordText.bottom
                 anchors.topMargin: 20
                 font.bold: true
-                onClicked: closingWindow(idText.text, passwordText.text)
+                onClicked: {
+                    closingWindow(idText.text, passwordText.text)
+                }
 
                 MouseArea {
                     anchors.fill: parent
@@ -370,6 +394,11 @@ Window {
 
         function onShowWindowSignal () {
             window.visible = true
+        }
+
+        function on_pop_up_signal (message) {
+            timer.startTimer(onShowWindowSignal, 3500)
+            open_pop_up(message)
         }
         
         function onAccountSignal(accountType) {

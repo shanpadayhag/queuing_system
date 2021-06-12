@@ -48,6 +48,20 @@ Item {
         queueLineListModel.clear()
         AdminHome.getQueueLineNumbers()
     }
+
+    function success_pop_up(message) {
+        var component = Qt.createComponent("../../popup/successful.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
+    }
+
+    function error_pop_up(message) {
+        var component = Qt.createComponent("../../popup/error.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
+    }
     
     Timer {
         id: timer
@@ -283,6 +297,7 @@ Item {
                             AdminHome.returnKey()
                             returneeListModel.clear()
                             AdminHome.displayRequests()
+                            success_pop_up("Request to return key successful")
                         }
                     }
                 }
@@ -594,6 +609,7 @@ Item {
 
                     ScrollView {
                         anchors.fill: parent
+                        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
                         
                         ListView {
                             id: queueLineListView

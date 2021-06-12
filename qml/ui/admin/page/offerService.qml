@@ -24,7 +24,6 @@ Item {
     function refresh() {
         try {
             listModel.clear()
-            console.log(listView.currentIndex)
             AdminOfferService.display()
             listView.currentIndex = index_selected
         } catch(err) {}
@@ -44,6 +43,13 @@ Item {
 
             removeServiceText.text = ""
         }
+    }
+
+    function open_pop_up(message) {
+        var component = Qt.createComponent("../../popup/successful.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
     }
     
     Timer {
@@ -75,12 +81,13 @@ Item {
         
         Rectangle {
             id: rectangle
-            width: 338
             color: "#58697e"
             radius: 10
             anchors.left: parent.left
+            anchors.right: scrollView1.left
             anchors.top: parent.top
             anchors.bottom: parent.bottom
+            anchors.rightMargin: 20
             anchors.bottomMargin: 20
             anchors.leftMargin: 20
             anchors.topMargin: 20
@@ -198,14 +205,13 @@ Item {
         
         ScrollView {
             id: scrollView1
-            anchors.left: rectangle.right
+            width: 416
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.rightMargin: 20
             anchors.bottomMargin: 20
             anchors.topMargin: 20
-            anchors.leftMargin: 20
             contentHeight: rectangle10.height
             
             Rectangle {
@@ -309,6 +315,7 @@ Item {
                                 AdminOfferService.addService(serviceTitleText.text, serviceMessageText.text)
                                 listView.currentIndex = 0
                                 update_list()
+                                open_pop_up("Service added successfully")
                             }
                         }
                         
@@ -328,6 +335,7 @@ Item {
                             onClicked: {
                                 AdminOfferService.editService(listModel.get(listView.currentIndex).idService, serviceTitleText.text, serviceMessageText.text)
                                 refresh()
+                                open_pop_up("Service edited successfully")
                             }
                         }
                     }
@@ -409,6 +417,7 @@ Item {
                                 AdminOfferService.removeService(listModel.get(listView.currentIndex).idService)    
                                 index_selected--
                                 update_list()
+                                open_pop_up("Service removed successfully")
                             }
                         }
                     }

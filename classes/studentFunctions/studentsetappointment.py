@@ -67,15 +67,26 @@ class setAppointment(QObject):
         txtFile.close()
 
     displayInstructorSignal = Signal(str, int)
+    displayInstructorSignal_v2 = Signal(str, int)
     displayInstructorSignal2 = Signal(int, int)
     displayInstructorSignal3 = Signal(int, str)
     @Slot()
     def displayInstructors(self):
-        self.sqlString = "SELECT name, accounts.id, status, imgurl FROM accounts JOIN instructorinfo ON accounts.id = instructorinfo.id JOIN accountimg ON accounts.id = accountimg.id WHERE type = 'instructor' or type = 'admin'"
+        self.sqlString = "SELECT name, accounts.id, status, imgurl, programs FROM accounts JOIN instructorinfo ON accounts.id = instructorinfo.id JOIN accountimg ON accounts.id = accountimg.id LEFT JOIN chairmans ON accounts.id = chairmans.id WHERE type = 'instructor' or type = 'admin'"
         self.sqlList = self.fromDB.selectall(self.sqlString)
         count = 0
         for x in self.sqlList:
-            self.displayInstructorSignal.emit(x[0], x[1])
+            if x[4] == None:
+                self.displayInstructorSignal.emit(x[0], x[1])
+            elif x[4] == "CS":
+                self.displayInstructorSignal_v2.emit(x[0] + " (Computer Science Chairman)", x[1])
+            elif x[4] == "EMC":
+                self.displayInstructorSignal_v2.emit(x[0] + " (Entertainment and Multimedia Computing)", x[1])
+            elif x[4] == "IS":
+                self.displayInstructorSignal_v2.emit(x[0] + " (Information System Chairman)", x[1])
+            elif x[4] == "IT":
+                self.displayInstructorSignal_v2.emit(x[0] + " (Information Technology Chairman)", x[1])
+
             self.displayInstructorSignal2.emit(count, x[2])
             self.displayInstructorSignal3.emit(count, x[3])
 
@@ -89,7 +100,7 @@ class setAppointment(QObject):
         for x in self.sqlList:
             self.displayCoursesSignal.emit(x[0])
 
-    @Slot(str, str, str, str)
+    @Slot(str, str, str, str, result=bool)
     def setAppointment(self, dateSelected, timeSelected, reason, instructor):
         day, date, month, year = dateSelected.split(",")
         hour = timeSelected.split(":")[0]
@@ -100,3 +111,13 @@ class setAppointment(QObject):
         self.sqlString = "INSERT INTO setappointment (account, date, time, reason, instructor) VALUES (%s, %s, %s, %s, %s)"
         self.sqlData = (self.idText, dateSelected, timeSelected, reason, instructor)
         self.fromDB.setValues(self.sqlString, self.sqlData)
+
+        return True
+
+    refresh_index_signal = Signal(int, int)
+    @Slot(int, str)
+    def refresh_index(self, index, id):
+        self.sqlString = "SELECT status FROM instructorinfo WHERE id = %s"
+        self.sqlData = (id,)
+        self.sqlList = self.fromDB.selectone(self.sqlString, self.sqlData)[0]
+        self.refresh_index_signal.emit(index, self.sqlList)

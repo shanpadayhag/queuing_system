@@ -30,6 +30,11 @@ class login(QObject):
     @Slot()
     def showWindow(self):
         self.showWindowSignal.emit()
+    
+    _pop_up_signal = Signal(str)
+    @Slot(str)
+    def pop_up(self, message):
+        self._pop_up_signal.emit(message)
 
     accountSignal = Signal(str)
     @Slot(str, str, result = int)

@@ -18,28 +18,28 @@ class admin_handling(QObject):
     getInstructorSignal = Signal(str, str)
     @Slot()
     def getInstructors(self):
-        self.sql_statement = "SELECT * FROM accounts WHERE type = 'instructor'"
+        self.sql_statement = "SELECT name, id_school FROM accounts WHERE type = 'instructor'"
         self.sql_list = self.fromDB.selectall(self.sql_statement)
         for x in self.sql_list:
-            self.getInstructorSignal.emit(x[1], x[0])
+            self.getInstructorSignal.emit(x[0], x[1])
 
     getAdminSignal = Signal(str, str)
     @Slot()
     def getAdmins(self):
-        self.sql_statement = "SELECT * FROM accounts WHERE type = 'admin'"
+        self.sql_statement = "SELECT name, id_school FROM accounts WHERE type = 'admin'"
         self.sql_list = self.fromDB.selectall(self.sql_statement)
         for x in self.sql_list:
-            self.getAdminSignal.emit(x[1], x[0])
+            self.getAdminSignal.emit(x[0], x[1])
 
     @Slot(str)
     def makeAdmin(self, id):
-        self.sql_statement = "UPDATE accounts SET type = 'admin' WHERE id = %s"
+        self.sql_statement = "UPDATE accounts SET type = 'admin' WHERE id_school = %s"
         self.sql_data = (id,)
         self.fromDB.setValues(self.sql_statement, self.sql_data)
 
     @Slot(str)
     def makeInstructor(self, id):
-        self.sql_statement = "UPDATE accounts SET type = 'instructor' WHERE id = %s"
+        self.sql_statement = "UPDATE accounts SET type = 'instructor' WHERE id_school = %s"
         self.sql_data = (id,)
         self.fromDB.setValues(self.sql_statement, self.sql_data)
 

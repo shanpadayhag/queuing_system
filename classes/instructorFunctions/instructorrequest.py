@@ -70,6 +70,13 @@ class appointment(QObject):
         self.sqlData = (id,)
         self.fromDB.setValues(self.sqlString, self.sqlData)
 
+        self.sqlString = "SELECT name FROM accounts WHERE id = (SELECT account FROM setappointment WHERE id = %s)"
+        self.sqlData = (id,)
+        name = self.fromDB.selectone(self.sqlString, self.sqlData)[0]
+        name = name.split()[0]
+
+        self.sendMail.sendemail_accepted("shanpadayhag@gmail.com", name, id)
+
         #self.sendMail.sendemail("HiraethDesu@gmail.com", "shanpadayhag@gmail.com", "BOBO", id)
 
     @Slot(int)
@@ -77,6 +84,13 @@ class appointment(QObject):
         self.sqlString = "UPDATE setappointment SET status = 'declined' WHERE id = %s"
         self.sqlData = (id,)
         self.fromDB.setValues(self.sqlString, self.sqlData)
+
+        self.sqlString = "SELECT name FROM accounts WHERE id = (SELECT account FROM setappointment WHERE id = %s)"
+        self.sqlData = (id,)
+        name = self.fromDB.selectone(self.sqlString, self.sqlData)[0]
+        name = name.split()[0]
+
+        self.sendMail.sendemail_declined("shanpadayhag@gmail.com", name, id)
 
         #self.sendMail.sendemail("HiraethDesu@gmail.com", "shanpadayhag@gmail.com", "BOBO", id)
 

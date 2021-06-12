@@ -37,22 +37,31 @@ Item {
     }
 
     function add_student_function() {
-        AdminStudent.addAccount(addStudentName.text, addStudentID.text, addStudentProgram.text)
-        listModel.clear()
-        AdminStudent.display()
-        addStudentName.text = ""
-        addStudentID.text = ""
-        addStudentProgram.text = ""
-        listView.currentIndex = 0
-        removeStudentName.text = listModel.get(listView.currentIndex).name
-        editStudentName.text = listModel.get(listView.currentIndex).name
-        removeStudentID.text = listModel.get(listView.currentIndex).school_id
-        editStudentID.text = listModel.get(listView.currentIndex).school_id
-        editStudentProgram.text = listModel.get(listView.currentIndex).program
+        if (AdminStudent.addAccount(addStudentName.text, addStudentID.text, addStudentProgram.text)) {
+            listModel.clear()
+            AdminStudent.display()
+            addStudentName.text = ""
+            addStudentID.text = ""
+            addStudentProgram.text = ""
+            listView.currentIndex = 0
+            removeStudentName.text = listModel.get(listView.currentIndex).name
+            editStudentName.text = listModel.get(listView.currentIndex).name
+            removeStudentID.text = listModel.get(listView.currentIndex).school_id
+            editStudentID.text = listModel.get(listView.currentIndex).school_id
+            editStudentProgram.text = listModel.get(listView.currentIndex).program
+            success_pop_up("Student added successfully")
+        } else {
+            error_pop_up("School ID is already taken")
+            addStudentID.color = "#EF534F"
+        }
     }
 
     function remove_student_function() {
-        AdminStudent.removeStudent(listModel.get(listView.currentIndex).account_id)
+        if (AdminStudent.removeStudent(listModel.get(listView.currentIndex).account_id)) {
+            success_pop_up("Student removed successfully")
+        } else {
+            error_pop_up("Account already cease to exist")
+        }
         listModel.clear()
         AdminStudent.display()
 
@@ -73,12 +82,31 @@ Item {
     }
 
     function edit_student_function() {
-        AdminStudent.editStudent(listModel.get(listView.currentIndex).account_id, editStudentID.text, editStudentName.text, editStudentProgram.text)
-        listModel.clear()
-        AdminStudent.display()
-        listView.currentIndex = indexSelected
-        removeStudentName.text = editStudentName.text
-        removeStudentID.text = editStudentID.text
+        if (AdminStudent.editStudent(listModel.get(listView.currentIndex).account_id, editStudentID.text, editStudentName.text, editStudentProgram.text)) {
+            listModel.clear()
+            AdminStudent.display()
+            listView.currentIndex = indexSelected
+            removeStudentName.text = editStudentName.text
+            removeStudentID.text = editStudentID.text
+            success_pop_up("Student edited successfully")
+        } else {
+            editStudentID.color = "#EF534F"
+            error_pop_up("School ID is already taken")
+        }
+    }
+
+    function success_pop_up(message) {
+        var component = Qt.createComponent("../../popup/successful.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
+    }
+
+    function error_pop_up(message) {
+        var component = Qt.createComponent("../../popup/error.qml")
+        var win = component.createObject()
+        win.message = message
+        win.show()
     }
 
     Rectangle {
@@ -340,7 +368,7 @@ Item {
                         anchors.leftMargin: 20
                         anchors.topMargin: 10
                         validator: RegExpValidator{regExp: /[0-9]+/}
-                        onPressed: fieldSelected = 1
+                        onPressed: fieldSelected = 1, addStudentID.color = "#FFFFFF"
                     }
 
                     CustomTextField {
@@ -549,7 +577,7 @@ Item {
                         placeholderText: "Student school ID"
                         font.pixelSize: 13
                         validator: RegExpValidator{regExp: /[0-9]+/}
-                        onPressed: fieldSelected = 3
+                        onPressed: fieldSelected = 3, editStudentID.color = "#FFFFFF"
                     }
 
                     CustomTextField {

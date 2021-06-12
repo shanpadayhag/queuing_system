@@ -16,6 +16,7 @@ Window {
 
     function setChairman() {
         SetChairman.set_chairman(csChairman.text, emcChairman.text, isChairman.text, itChairman.text)
+        window.close()
     }
 
     Rectangle {
@@ -366,7 +367,7 @@ Window {
 
     Shortcut {
         sequence: "Ctrl+S"
-        onActivated: setChairman(), window.close()
+        onActivated: setChairman()
     }
     
     Component.onCompleted: {
