@@ -1,489 +1,642 @@
 import QtQuick 2.15
-import QtQuick.Controls 2.15
 import QtQuick.Window 2.15
-import QtGraphicalEffects 1.15
-
-import "components"
+import QtQuick.Controls 2.15
 import "controls"
 
 Window {
-    id: adminUI
-    width: 1400
-    height: 800
+    id: mainWindow
+    width: 1101 //1101 // 1853
+    height: 857 //857 // 1000
     minimumWidth: 800
     minimumHeight: 500
     visible: true
     color: "#00000000"
     title: qsTr("")
+    Component.onCompleted: {
+        x = Screen.width / 2 - width / 2
+        y = Screen.height / 2 - height / 2
+    }
 
     flags: Qt.Window | Qt.FramelessWindowHint
 
     property int windowStatus: 0
-    property int windowMargin: 10
-
     QtObject {
-        id: internal
-        function maximizeRestore() {
-            if (windowStatus == 0) {
-                adminUI.showMaximized()
-                windowStatus = 1
-                windowMargin = 0
-                maximize.btnIconSource = "../imgs/svg_images/restore_icon.svg"
-            } else {
-                adminUI.showNormal()
+            id: internal
+            function maximizeRestore() {
+                if (windowStatus == 0) {
+                    mainWindow.showMaximized()
+                    windowStatus = 1
+                } else {
+                    mainWindow.showNormal()
+                    windowStatus = 0
+                }
+            }
+            function ifMaximizedWindowRestore() {
+                if(windowStatus == 1) {
+                    mainWindow.showNormal()
+                    windowStatus = 0
+                }
+            }
+            function ifMinimizedWindowRestore() {
                 windowStatus = 0
-                windowMargin = 10
-                maximize.btnIconSource = "../imgs/svg_images/maximize_icon.svg"
             }
         }
-        function ifMaximizedWindowRestore() {
-            if(windowStatus == 1) {
-                adminUI.showNormal()
-                windowStatus = 0
-                windowMargin = 10
-                maximize.btnIconSource = "../imgs/svg_images/maximize_icon.svg"
-            }
-        }
-        function ifMinimizedWindowRestore() {
-            windowStatus = 0
-            windowMargin = 10
-            maximize.btnIconSource = "../imgs/svg_images/maximize_icon.svg"
-        }
-    }
 
     Rectangle {
-        id: background
-        color: "#404142"
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
+        id: windowDesign
+        color: "#13141f"
+        radius: 10
         anchors.bottom: parent.bottom
-        anchors.rightMargin: windowMargin
-        anchors.leftMargin: windowMargin
-        anchors.bottomMargin: windowMargin
-        anchors.topMargin: windowMargin
-        z: 1
+        anchors.fill: parent
+        antialiasing: true
+        anchors.rightMargin: 0
+        anchors.leftMargin: 0
+        anchors.bottomMargin: 0
+        anchors.topMargin: 0
 
         Rectangle {
-            id: container
-            color: "#1e1e1e"
-            anchors.fill: parent
-            anchors.rightMargin: 1
-            anchors.leftMargin: 1
-            anchors.bottomMargin: 1
-            anchors.topMargin: 1
+            id: leftMenu
+            width: 244
+            color: "#11121b"
+            radius: 10
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.leftMargin: 0
+            anchors.bottomMargin: 0
+            anchors.topMargin: 0
+            clip: true
 
-            Rectangle {
-                id: topBar
-                height: 60
-                color: "#37373d"
+            ScrollView {
+                id: scrollView
+                clip: true
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: label.bottom
+                anchors.bottom: parent.bottom
+                antialiasing: false
+                anchors.topMargin: 20
+                ScrollBar.vertical.interactive: true
+                contentHeight: 400
+
+                LeftMenuBtn {
+                    id: homeBtn
+                    x: 0
+                    isActiveMenu: true
+                    width: 250
+                    height: 56
+                    opacity: 1
+                    text: "Home"
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    font.pointSize: 12
+                    antialiasing: false
+                    btnColorClicked: "#1a1a40"
+                    btnColorDefault: "#00000000"
+                    anchors.topMargin: 10
+                    btnColorMouseOver: "#b3202056"
+                    anchors.leftMargin: 0
+                    onClicked: {
+                        homeBtn.isActiveMenu = true
+                        setAppointmentBtn.isActiveMenu = false
+                        requestAppointmentBtn.isActiveMenu = false
+                        specialServicesBtn.isActiveMenu = false
+                        roomReservationBtn.isActiveMenu = false
+                        studentAccountsBtn.isActiveMenu = false
+                        instructorAccountsBtn.isActiveMenu = false
+                        roomStatusBtn.isActiveMenu = false
+                        applyServicesBtn.isActiveMenu = false
+                        stackViewLabel.text = '| Home'
+                        stackView.push(Qt.resolvedUrl("pages/admin/home.qml"))
+                    }
+                }
+
+
+                LeftMenuBtn {
+                    id: setAppointmentBtn
+                    x: 0
+                    width: 250
+                    height: 56
+                    text: "Set Appointment"
+                    anchors.left: parent.left
+                    anchors.top: homeBtn.bottom
+                    font.pointSize: 12
+                    antialiasing: false
+                    btnColorClicked: "#1a1a40"
+                    anchors.topMargin: 0
+                    btnColorMouseOver: "#b3202056"
+                    btnColorDefault: "#00000000"
+                    anchors.leftMargin: 0
+                    onClicked: {
+                        homeBtn.isActiveMenu = false
+                        setAppointmentBtn.isActiveMenu = true
+                        requestAppointmentBtn.isActiveMenu = false
+                        specialServicesBtn.isActiveMenu = false
+                        roomReservationBtn.isActiveMenu = false
+                        studentAccountsBtn.isActiveMenu = false
+                        instructorAccountsBtn.isActiveMenu = false
+                        roomStatusBtn.isActiveMenu = false
+                        applyServicesBtn.isActiveMenu = false
+                        stackViewLabel.text = '| Set Appointment'
+                        stackView.push(Qt.resolvedUrl("pages/admin/checkAvailability.qml"))
+                    }
+                }
+
+
+                LeftMenuBtn {
+                    id: requestAppointmentBtn
+                    x: 40
+                    width: 250
+                    height: 56
+                    text: "Appointment Request"
+                    anchors.left: parent.left
+                    anchors.top: setAppointmentBtn.bottom
+                    font.pointSize: 12
+                    antialiasing: false
+                    btnColorClicked: "#1a1a40"
+                    btnColorMouseOver: "#b3202056"
+                    btnColorDefault: "#00000000"
+                    anchors.topMargin: 0
+                    anchors.leftMargin: 0
+                    onClicked: {
+                        homeBtn.isActiveMenu = false
+                        setAppointmentBtn.isActiveMenu = false
+                        requestAppointmentBtn.isActiveMenu = true
+                        specialServicesBtn.isActiveMenu = false
+                        roomReservationBtn.isActiveMenu = false
+                        studentAccountsBtn.isActiveMenu = false
+                        instructorAccountsBtn.isActiveMenu = false
+                        roomStatusBtn.isActiveMenu = false
+                        applyServicesBtn.isActiveMenu = false
+                        stackViewLabel.text = '| Appointment Request'
+                        stackView.push(Qt.resolvedUrl("pages/admin/appointmentRequests.qml"))
+                    }
+                }
+
+
+                LeftMenuBtn {
+                    id: applyServicesBtn
+                    x: 40
+                    width: 250
+                    height: 56
+                    text: "Apply for Services"
+                    anchors.left: parent.left
+                    anchors.top: requestAppointmentBtn.bottom
+                    font.pointSize: 12
+                    anchors.topMargin: 0
+                    anchors.leftMargin: 0
+                    btnColorDefault: "#00000000"
+                    btnColorClicked: "#1a1a40"
+                    antialiasing: false
+                    btnColorMouseOver: "#b3202056"
+                    onClicked: {
+                        homeBtn.isActiveMenu = false
+                        setAppointmentBtn.isActiveMenu = false
+                        requestAppointmentBtn.isActiveMenu = false
+                        specialServicesBtn.isActiveMenu = false
+                        roomReservationBtn.isActiveMenu = false
+                        studentAccountsBtn.isActiveMenu = false
+                        instructorAccountsBtn.isActiveMenu = false
+                        roomStatusBtn.isActiveMenu = false
+                        applyServicesBtn.isActiveMenu = true
+                        stackViewLabel.text = '| Appointment Request'
+                        stackView.push(Qt.resolvedUrl("pages/admin/applyForService.qml"))
+                    }
+                }
+
+                LeftMenuBtn {
+                    id: specialServicesBtn
+                    width: 250
+                    height: 56
+                    text: "Special Services"
+                    anchors.left: parent.left
+                    anchors.top: applyServicesBtn.bottom
+                    anchors.topMargin: 0
+                    font.pointSize: 12
+                    antialiasing: false
+                    anchors.leftMargin: 0
+                    btnColorClicked: "#1a1a40"
+                    btnColorMouseOver: "#b3202056"
+                    btnColorDefault: "#00000000"
+                    onClicked: {
+                        homeBtn.isActiveMenu = false
+                        setAppointmentBtn.isActiveMenu = false
+                        requestAppointmentBtn.isActiveMenu = false
+                        specialServicesBtn.isActiveMenu = true
+                        roomReservationBtn.isActiveMenu = false
+                        studentAccountsBtn.isActiveMenu = false
+                        instructorAccountsBtn.isActiveMenu = false
+                        roomStatusBtn.isActiveMenu = false
+                        applyServicesBtn.isActiveMenu = false
+                        stackViewLabel.text = '| Special Services'
+                        stackView.push(Qt.resolvedUrl("pages/admin/specialServices.qml"))
+                    }
+                }
+
+
+                LeftMenuBtn {
+                    id: roomStatusBtn
+                    x: 40
+                    width: 250
+                    height: 56
+                    text: "Room Status"
+                    anchors.left: parent.left
+                    anchors.top: specialServicesBtn.bottom
+                    font.pointSize: 12
+                    anchors.topMargin: 0
+                    anchors.leftMargin: 0
+                    btnColorDefault: "#00000000"
+                    btnColorClicked: "#1a1a40"
+                    antialiasing: false
+                    btnColorMouseOver: "#b3202056"
+                    onClicked: {
+                        homeBtn.isActiveMenu = false
+                        setAppointmentBtn.isActiveMenu = false
+                        requestAppointmentBtn.isActiveMenu = false
+                        specialServicesBtn.isActiveMenu = false
+                        roomReservationBtn.isActiveMenu = false
+                        studentAccountsBtn.isActiveMenu = false
+                        instructorAccountsBtn.isActiveMenu = false
+                        roomStatusBtn.isActiveMenu = true
+                        applyServicesBtn.isActiveMenu = false
+                        stackViewLabel.text = '| Instructor Accounts'
+                        stackView.push(Qt.resolvedUrl("pages/admin/roomStatus.qml"))
+                    }
+                }
+
+                LeftMenuBtn {
+                    id: roomReservationBtn
+                    x: 40
+                    width: 250
+                    height: 56
+                    text: "Room Reservation"
+                    anchors.left: parent.left
+                    anchors.top: roomStatusBtn.bottom
+                    font.pointSize: 12
+                    antialiasing: false
+                    btnColorClicked: "#1a1a40"
+                    btnColorMouseOver: "#b3202056"
+                    btnColorDefault: "#00000000"
+                    anchors.topMargin: 0
+                    anchors.leftMargin: 0
+                    onClicked: {
+                        homeBtn.isActiveMenu = false
+                        setAppointmentBtn.isActiveMenu = false
+                        requestAppointmentBtn.isActiveMenu = false
+                        specialServicesBtn.isActiveMenu = false
+                        roomReservationBtn.isActiveMenu = true
+                        studentAccountsBtn.isActiveMenu = false
+                        instructorAccountsBtn.isActiveMenu = false
+                        roomStatusBtn.isActiveMenu = false
+                        applyServicesBtn.isActiveMenu = false
+                        stackViewLabel.text = '| Room Reservation'
+                        stackView.push(Qt.resolvedUrl("pages/admin/roomReservation.qml"))
+                    }
+                }
+
+
+                LeftMenuBtn {
+                    id: studentAccountsBtn
+                    x: 40
+                    width: 250
+                    height: 56
+                    text: "Student Accounts"
+                    anchors.left: parent.left
+                    anchors.top: roomReservationBtn.bottom
+                    font.pointSize: 12
+                    antialiasing: false
+                    btnColorClicked: "#1a1a40"
+                    btnColorMouseOver: "#b3202056"
+                    btnColorDefault: "#00000000"
+                    anchors.topMargin: 0
+                    anchors.leftMargin: 0
+                    onClicked: {
+                        homeBtn.isActiveMenu = false
+                        setAppointmentBtn.isActiveMenu = false
+                        requestAppointmentBtn.isActiveMenu = false
+                        specialServicesBtn.isActiveMenu = false
+                        roomReservationBtn.isActiveMenu = false
+                        studentAccountsBtn.isActiveMenu = true
+                        instructorAccountsBtn.isActiveMenu = false
+                        roomStatusBtn.isActiveMenu = false
+                        applyServicesBtn.isActiveMenu = false
+                        stackViewLabel.text = '| Student Accounts'
+                        stackView.push(Qt.resolvedUrl("pages/admin/students.qml"))
+                    }
+                }
+
+
+                LeftMenuBtn {
+                    id: instructorAccountsBtn
+                    x: 40
+                    width: 250
+                    height: 56
+                    text: "Instructor Accounts"
+                    anchors.left: parent.left
+                    anchors.top: studentAccountsBtn.bottom
+                    font.pointSize: 12
+                    antialiasing: false
+                    btnColorClicked: "#1a1a40"
+                    btnColorMouseOver: "#b3202056"
+                    btnColorDefault: "#00000000"
+                    anchors.topMargin: 0
+                    anchors.leftMargin: 0
+                    onClicked: {
+                        homeBtn.isActiveMenu = false
+                        setAppointmentBtn.isActiveMenu = false
+                        requestAppointmentBtn.isActiveMenu = false
+                        specialServicesBtn.isActiveMenu = false
+                        roomReservationBtn.isActiveMenu = false
+                        studentAccountsBtn.isActiveMenu = false
+                        instructorAccountsBtn.isActiveMenu = true
+                        roomStatusBtn.isActiveMenu = false
+                        applyServicesBtn.isActiveMenu = false
+                        stackViewLabel.text = '| Instructor Accounts'
+                        stackView.push(Qt.resolvedUrl("pages/admin/instructor.qml"))
+                    }
+                }
+
+
+
+            }
+
+            Label {
+                id: label
+                x: 40
+                y: 100
+                opacity: 1
+                color: "#ffffff"
+                text: qsTr("Admin UI")
+                anchors.left: parent.left
+                anchors.leftMargin: 30
+                font.pointSize: 15
+                font.bold: true
+            }
+
+        }
+
+        Rectangle {
+            id: contents
+            opacity: 1
+            color: "#00000000"
+            radius: 10
+            anchors.left: leftMenu.right
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.leftMargin: 0
+            anchors.rightMargin: 0
+            anchors.bottomMargin: 0
+            anchors.topMargin: 136
+            clip: true
+
+            StackView {
+                id: stackView
+                opacity: 1
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: parent.top
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-
-                ToggleBtn {
-                    id: asdf
-                    onClicked: animationMenu.running = true
-                }
-
-                Rectangle {
-                    id: toggleBarDescriptioin
-                    y: 30
-                    height: 25
-                    color: "#2f2f2f"
-                    anchors.left: asdf.right
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-                    anchors.rightMargin: 0
-                    anchors.leftMargin: 0
-                    anchors.bottomMargin: 0
-
-                    Label {
-                        id: topInfoLabel
-                        color: "#576a82"
-                        text: qsTr("Welcome Admin")
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        horizontalAlignment: Text.AlignLeft
-                        verticalAlignment: Text.AlignVCenter
-                        font.pointSize: 10
-                        anchors.rightMargin: 300
-                        anchors.bottomMargin: 0
-                        anchors.topMargin: 0
-                        anchors.leftMargin: 20
-                    }
-
-                    Label {
-                        id: rightLabel
-                        color: "#576a82"
-                        text: qsTr("| HOME")
-                        anchors.left: topInfoLabel.right
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        horizontalAlignment: Text.AlignRight
-                        verticalAlignment: Text.AlignVCenter
-                        anchors.topMargin: 0
-                        anchors.bottomMargin: 0
-                        anchors.leftMargin: 0
-                        anchors.rightMargin: 10
-                        font.pointSize: 10
-                    }
-                }
-
-                Rectangle {
-                    id: titleBar
-                    height: 35
-                    color: "#00000000"
-                    anchors.left: asdf.right
-                    anchors.right: row.left
-                    anchors.top: parent.top
-                    anchors.rightMargin: 0
-                    anchors.leftMargin: 0
-                    anchors.topMargin: 0
-
-                    DragHandler {
-                        onActiveChanged: if (active) {
-                                             adminUI.startSystemMove()
-                                             internal.ifMaximizedWindowRestore()
-                                         }
-                    }
-
-                    Image {
-                        id: appIcon
-                        width: 28
-                        anchors.left: parent.left
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        source: "../imgs/favicon.png"
-                        anchors.leftMargin: 10
-                        anchors.bottomMargin: 0
-                        anchors.topMargin: 0
-                        fillMode: Image.PreserveAspectFit
-                    }
-
-                    Label {
-                        id: titleLabel
-                        color: "#c3cbdd"
-                        text: qsTr("Admin")
-                        anchors.left: appIcon.right
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        verticalAlignment: Text.AlignVCenter
-                        font.pointSize: 10
-                        anchors.leftMargin: 10
-                    }
-                }
-
-                Row {
-                    id: row
-                    x: 1178
-                    width: 105
-                    height: 35
-                    anchors.right: parent.right
-                    anchors.top: parent.top
-                    anchors.topMargin: 0
-                    anchors.rightMargin: 0
-
-                    TopBarButton {
-                        id: minimize
-                        onClicked: {
-                            adminUI.showMinimized()
-                            internal.ifMinimizedWindowRestore()
-                        }
-                    }
-
-                    TopBarButton {
-                        id: maximize
-                        btnIconSource: "../imgs/svg_images/maximize_icon.svg"
-                        onClicked: internal.maximizeRestore()
-                    }
-
-                    TopBarButton {
-                        id: close
-                        btnColorMouseOver: "#e81123"
-                        btnColorClicked: "#f1707a"
-                        btnIconSource: "../imgs/svg_images/close_icon.svg"
-                        onClicked: adminUI.close()
-                    }
-                }
-            }
-
-            Rectangle {
-                id: content
-                color: "#00000000"
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: topBar.bottom
                 anchors.bottom: parent.bottom
-                anchors.topMargin: 0
+                anchors.leftMargin: 0
+                antialiasing: true
+                initialItem: Qt.resolvedUrl("pages/admin/home.qml")
+            }
+        }
 
-                Rectangle {
-                    id: leftMenu
-                    width: 70
-                    color: "#252526"
-                    anchors.left: parent.left
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                    clip: true
-                    anchors.leftMargin: 0
-                    anchors.bottomMargin: 0
-                    anchors.topMargin: 0
+        Label {
+            id: label1
+            opacity: 1
+            color: "#ffffff"
+            text: qsTr("Queuing System")
+            anchors.left: leftMenu.right
+            anchors.top: parent.top
+            verticalAlignment: Text.AlignVCenter
+            anchors.leftMargin: 68
+            font.bold: true
+            font.pointSize: 15
+            anchors.topMargin: 64
+        }
 
-                    PropertyAnimation {
-                        id: animationMenu
-                        target: leftMenu
-                        property: "width"
-                        to: if (leftMenu.width == 0) return 360; else return 0
-                        duration: 1000
-                        easing.type: Easing.OutBounce
-                    }
+        StatusSwitch {
+            anchors.left: label1.right
+            anchors.top: parent.top
+            anchors.leftMargin: 13
+            anchors.topMargin: 60
 
-                    Column {
-                        id: column
-                        width: 200
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        clip: false
-                        anchors.rightMargin: 0
-                        anchors.leftMargin: 0
-                        anchors.bottomMargin: 90
-                        anchors.topMargin: 0
+        }
 
-                        LeftMenuBtn {
-                            id: homeBtn
-                            width: leftMenu.width
-                            text: qsTr("Home")
-                            isActiveMenu: true
-                            onClicked: {
-                                homeBtn.isActiveMenu = true
-                                queueBtn.isActiveMenu = false
-                                addBtn.isActiveMenu = false
-                                stackView.push(Qt.resolvedUrl("pages/admin/home.qml"))
-                            }
-                        }
+        Label {
+            id: stackViewLabel
+            x: 866
+            opacity: 1
+            color: "#56595c"
+            text: '| Home'
+            anchors.right: parent.right
+            anchors.bottom: contents.top
+            horizontalAlignment: Text.AlignRight
+            verticalAlignment: Text.AlignVCenter
+            anchors.bottomMargin: 9
+            anchors.rightMargin: 23
+            font.pointSize: 12
+        }
 
+        Rectangle {
+            id: topCornerBtns
+            width: 164
+            height: 73
+            color: "#00000000"
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.topMargin: 20
+            anchors.rightMargin: 0
 
-                        LeftMenuBtn {
-                            id: queueBtn
-                            width: leftMenu.width
-                            visible: true
-                            text: qsTr("Home")
-                            btnIconSource: "../imgs/check-square.svg"
-                            isActiveMenu: false
-                            onClicked: {
-                                homeBtn.isActiveMenu = false
-                                queueBtn.isActiveMenu = true
-                                addBtn.isActiveMenu = false
-                                logOutBtn.isActiveMenu = false
-                                stackView.push(Qt.resolvedUrl("pages/admin/queue.qml"))
-                            }
-                        }
+            ExitRound {
+                y: 28
+                width: 15
+                height: 15
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 30
+                onClicked: mainWindow.close()
+            }
 
-                        LeftMenuBtn {
-                            id: addBtn
-                            width: leftMenu.width
-                            text: qsTr("Add users")
-                            btnIconSource: "../imgs/svg_images/open_icon.svg"
-                            isActiveMenu: false
-                            onClicked: {
-                                homeBtn.isActiveMenu = false
-                                queueBtn.isActiveMenu = false
-                                addBtn.isActiveMenu = true
-                                logOutBtn.isActiveMenu = false
-                                stackView.push(Qt.resolvedUrl("pages/admin/add.qml"))
-                            }
-                        }
-                    }
-
-                    LeftMenuBtn {
-                        id: logOutBtn
-                        x: 0
-                        y: 180
-                        width: leftMenu.width
-                        text: qsTr("Log out")
-                        anchors.bottom: parent.bottom
-                        btnIconSource: "../imgs/log-out.svg"
-                        anchors.bottomMargin: 25
-                        onClicked: {
-                            adminUI.close()
-                        }
-                    }
+            MinimizeRound {
+                y: 18
+                width: 15
+                height: 15
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 75
+                onClicked: {
+                    mainWindow.showMinimized()
+                    internal.ifMinimizedWindowRestore()
                 }
+            }
 
-                Rectangle {
-                    id: contentPages
-                    color: "#1e1e1e"
-                    anchors.left: leftMenu.right
-                    anchors.right: parent.right
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                    anchors.rightMargin: 0
-                    anchors.leftMargin: 0
-                    anchors.bottomMargin: 25
-                    anchors.topMargin: 0
-
-                    StackView {
-                        id: stackView
-                        anchors.fill: parent
-                        initialItem: Qt.resolvedUrl("pages/admin/home.qml")
-                    }
-                }
-
-                Rectangle {
-                    id: bottomBar
-                    y: 510
-                    height: 25
-                    color: "#2f2f2f"
-                    anchors.left: leftMenu.right
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-                    anchors.rightMargin: 0
-                    anchors.leftMargin: 0
-                    anchors.bottomMargin: 0
-
-                    Label {
-                        id: bottomInfoLabel
-                        color: "#576a82"
-                        text: qsTr("Welcome Admin")
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        horizontalAlignment: Text.AlignLeft
-                        verticalAlignment: Text.AlignVCenter
-                        anchors.topMargin: 0
-                        anchors.bottomMargin: 0
-                        anchors.leftMargin: 20
-                        anchors.rightMargin: 30
-                        font.pointSize: 10
-                    }
-
-                    MouseArea {
-                        id: mouseAreaCorner
-                        x: 1283
-                        y: 0
-                        width: 17
-                        height: 17
-                        anchors.right: parent.right
-                        anchors.bottom: parent.bottom
-                        anchors.rightMargin: 4
-                        anchors.bottomMargin: 4
-                        cursorShape: Qt.SizeFDiagCursor
-
-                        Image {
-                            id: image
-                            anchors.fill: parent
-                            source: "../imgs/svg_images/resize_icon.svg"
-                            fillMode: Image.PreserveAspectFit
-                            antialiasing: false
-                        }
-
-                        DragHandler {
-                            target: null
-                            onActiveChanged: if (active) {adminUI.startSystemResize(Qt.RightEdge | Qt.BottomEdge)}
-                        }
-
-                    }
-                }
+            MaximizeRound {
+                x: 72
+                y: 28
+                width: 15
+                height: 15
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.right: parent.right
+                anchors.rightMargin: 30
+                anchors.verticalCenterOffset: 0
+                onClicked: internal.maximizeRestore()
             }
         }
     }
 
-    DropShadow {
-        anchors.fill: background
-        horizontalOffset: 0
-        verticalOffset: 0
-        radius: 10
-        samples: 16
-        color: "#000000"
-        source: background
-        z: 0
-    }
-
     MouseArea {
-        id: mouseAreaLeft
+        id: leftDrag
         width: 10
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
+        anchors.topMargin: 10
         anchors.leftMargin: 0
-        anchors.bottomMargin: 10
-        anchors.topMargin: 10
+
         cursorShape: Qt.SizeHorCursor
 
         DragHandler {
             target: null
-            onActiveChanged: if (active) {adminUI.startSystemResize(Qt.LeftEdge)}
+            onActiveChanged: if (active) {mainWindow.startSystemResize(Qt.LeftEdge)}
         }
     }
 
     MouseArea {
-        id: mouseAreaRight
+        id: rightDrag
+        x: 0
         width: 10
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.rightMargin: 0
         anchors.bottomMargin: 10
         anchors.topMargin: 10
+        anchors.rightMargin: 0
+
         cursorShape: Qt.SizeHorCursor
 
         DragHandler {
             target: null
-            onActiveChanged: if (active) {adminUI.startSystemResize(Qt.RightEdge)}
+            onActiveChanged: if (active) {mainWindow.startSystemResize(Qt.RightEdge)}
         }
     }
 
     MouseArea {
-        id: mouseAreaBottom
-        height: 10
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.rightMargin: 10
-        anchors.leftMargin: 10
-        anchors.bottomMargin: 0
-        cursorShape: Qt.SizeVerCursor
-
-        DragHandler {
-            target: null
-            onActiveChanged: if (active) {adminUI.startSystemResize(Qt.BottomEdge)}
-        }
-    }
-
-    MouseArea {
-        id: mouseAreaTop
+        id: topDrag
         height: 10
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.leftMargin: 10
         anchors.rightMargin: 10
+        anchors.leftMargin: 10
         anchors.topMargin: 0
+
         cursorShape: Qt.SizeVerCursor
 
         DragHandler {
             target: null
-            onActiveChanged: if (active) {adminUI.startSystemResize(Qt.TopEdge)}
+            onActiveChanged: if (active) {mainWindow.startSystemResize(Qt.TopEdge)}
+        }
+    }
+
+    MouseArea {
+        id: bottomDrag
+        y: 78
+        height: 10
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+        anchors.rightMargin: 10
+        anchors.leftMargin: 10
+
+        cursorShape: Qt.SizeVerCursor
+
+        DragHandler {
+            target: null
+            onActiveChanged: if (active) {mainWindow.startSystemResize(Qt.BottomEdge)}
+        }
+    }
+
+    MouseArea {
+        id: leftTopDrag
+        width: 10
+        height: 10
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.topMargin: 0
+        anchors.leftMargin: 0
+
+        cursorShape: Qt.SizeFDiagCursor
+
+        DragHandler {
+            target: null
+            onActiveChanged: if (active) {mainWindow.startSystemResize(Qt.LeftEdge | Qt.TopEdge)}
+        }
+    }
+
+    MouseArea {
+        id: leftBottomDrag
+        y: 24
+        width: 10
+        height: 10
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+        anchors.leftMargin: 0
+
+        cursorShape: Qt.SizeBDiagCursor
+
+        DragHandler {
+            target: null
+            onActiveChanged: if (active) {mainWindow.startSystemResize(Qt.LeftEdge | Qt.BottomEdge)}
+        }
+    }
+
+    MouseArea {
+        id: rightTopDrag
+        x: 1
+        width: 10
+        height: 10
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.topMargin: 0
+        anchors.rightMargin: 0
+
+        cursorShape: Qt.SizeBDiagCursor
+
+        DragHandler {
+            target: null
+            onActiveChanged: if (active) {mainWindow.startSystemResize(Qt.RightEdge | Qt.TopEdge)}
+        }
+    }
+
+    MouseArea {
+        id: rightBottomDrag
+        x: 0
+        y: 41
+        width: 10
+        height: 10
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+        anchors.rightMargin: 0
+
+        cursorShape: Qt.SizeFDiagCursor
+
+        DragHandler {
+            target: null
+            onActiveChanged: if (active) {mainWindow.startSystemResize(Qt.RightEdge | Qt.BottomEdge)}
         }
     }
 }
 
 
-
-
-
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.75}
+    D{i:0;formeditorZoom:0.9}
 }
 ##^##*/
