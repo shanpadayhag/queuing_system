@@ -7,20 +7,40 @@ import 'controls'
 Window {
     id: window
     width: 788
-    height: 453
+    height: 500
     visible: true
     color: "#00000000"
 
-    flags: Qt.splashScreen | Qt.FramelessWindowHint
+    flags: Qt.Window | Qt.FramelessWindowHint
 
     function logInChecker(sID, passcode){
-        if (login.chooseSoT(sID, passcode) === '1') {
+        if (login.chooseSoT(sID, passcode) === 'succeed') {
             window.close()
-        }
+        } /*else {
+            if (login.chooseSoT(sID, passcode) === '10') {
+                schoolIDText.color = '#E81123'
+                passwordText.color = '#FFFFFF'
+            }
+            else if (login.chooseSoT(sID, passcode) === '01') {
+                schoolIDText.color = '#FFFFFF'
+                passwordText.color = '#E81123'
+            }
+            else if (login.chooseSoT(sID, passcode) === '11') {
+                schoolIDText.color = '#E81123'
+                passwordText.color = '#E81123'
+            }
+        }*/
     }
 
     function enrollmentQueue() {
         var component = Qt.createComponent("queueNumber.qml")
+        var win = component.createObject()
+        win.show()
+        visible = true
+    }
+
+    function createAccountQMLFunction() {
+        var component = Qt.createComponent("createAccount.qml")
         var win = component.createObject()
         win.show()
         visible = true
@@ -76,22 +96,28 @@ Window {
 
             CustomTextField {
                 id: schoolIDText
-                anchors.bottom: passwordText.top
-                anchors.bottomMargin: 20
+                anchors.top: label1.bottom
+                anchors.topMargin: 40
                 anchors.horizontalCenterOffset: 0
                 anchors.horizontalCenter: parent.horizontalCenter
                 placeholderText: "School ID"
                 font.pointSize: 12
+                onAccepted: {
+                    logInChecker(schoolIDText.text, passwordText.text)
+                }
             }
 
             CustomTextField {
                 id: passwordText
-                anchors.bottom: logInBtn.top
-                anchors.bottomMargin: 40
+                anchors.top: schoolIDText.bottom
+                anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
                 placeholderText: "Password"
                 font.pointSize: 12
                 echoMode: TextInput.Password
+                onAccepted: {
+                    logInChecker(schoolIDText.text, passwordText.text)
+                }
             }
 
             CustomButton {
@@ -99,9 +125,9 @@ Window {
                 width: 175
                 height: 40
                 text: "Log In"
-                anchors.bottom: queueBtn.top
+                anchors.top: passwordText.bottom
+                anchors.topMargin: 40
                 font.bold: true
-                anchors.bottomMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.pointSize: 12
                 onClicked: {
@@ -113,8 +139,8 @@ Window {
                 id: label
                 color: "#ffffff"
                 text: qsTr("Sign in to Queuing System")
-                anchors.bottom: label1.top
-                anchors.bottomMargin: 20
+                anchors.top: parent.top
+                anchors.topMargin: 49
                 font.bold: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.pointSize: 16
@@ -124,8 +150,8 @@ Window {
                 id: label1
                 color: "#ffffff"
                 text: qsTr("School ID and Password")
-                anchors.bottom: schoolIDText.top
-                anchors.bottomMargin: 40
+                anchors.top: label.bottom
+                anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.pointSize: 12
             }
@@ -133,13 +159,48 @@ Window {
             CustomButton {
                 id: queueBtn
                 x: 206
-                y: 390
                 width: 175
                 height: 40
                 text: "Queue Number"
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 40
+                anchors.top: logInBtn.bottom
+                anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
+                font.pointSize: 10
+                onClicked: {
+                    enrollmentQueue()
+                }
+            }
+
+            CustomButton {
+                id: createAccBtn
+                width: 123
+                height: 23
+                text: "Create an Account"
+                anchors.left: label2.right
+                anchors.top: queueBtn.bottom
+                font.underline: true
+                anchors.leftMargin: 0
+                anchors.topMargin: 16
+                font.pointSize: 10
+                colorPressed: "#00000000"
+                colorMouseOver: "#00000000"
+                colorDefault: "#00000000"
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        createAccountQMLFunction()
+                    }
+                }
+            }
+
+            Label {
+                id: label2
+                x: 77
+                color: "#ffffff"
+                text: qsTr("Don't have an account?")
+                anchors.top: queueBtn.bottom
+                anchors.topMargin: 20
                 font.pointSize: 10
             }
         }
@@ -171,6 +232,7 @@ Window {
             colorPressed: "#ee5763"
             font.bold: true
             colorMouseOver: "#e81123"
+            onClicked: window.close()
         }
     }
 
@@ -187,9 +249,15 @@ Window {
 
     Connections {
         target: login
-
     }
-
 }
 
 
+
+
+
+/*##^##
+Designer {
+    D{i:0}D{i:16;invisible:true}
+}
+##^##*/

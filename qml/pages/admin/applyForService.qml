@@ -23,21 +23,11 @@ Item {
             ScrollView {
                 id: scrollView
                 anchors.fill: parent
-                contentHeight: modelName.height
                 clip: true
 
                 ListModel {
                     id: modelName
-                    ListElement {name: 'Lowee Oliva'; status: 1}
-                    ListElement {name: 'Rangie Obispo'; status: 1}
-                    ListElement {name: 'Elvira Yaneza'; status: 0}
-                    ListElement {name: 'Patrick Mack'; status: 1}
-                    ListElement {name: 'Jordan Canete'; status: 0}
-                    ListElement {name: 'Jessie Christopher Lagrosas'; status: 0}
-                    ListElement {name: 'Cristina Amor Cajilla'; status: 1}
-                    ListElement {name: 'Florence Reyes'; status: 0}
-                    ListElement {name: 'Maria Ramilla Jimenez'; status: 1}
-                    ListElement {name: 'Dr. Meldie Apag'; status: 0}
+                    ListElement {name: 'Lowee Oliva'; status: 1; services: ''}
                 }
 
                 Component {
@@ -105,7 +95,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.pointSize: 12
             }
-        }
+        }//modelName.append({'name': , 'status': , 'status': , 'services': })
     }
 }
 

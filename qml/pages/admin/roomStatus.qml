@@ -4,14 +4,44 @@ import "controls"
 
 Item {
     id: item1
+
+    property string roomNumber: ''
+
+    Timer {
+        id: timer
+
+        function startTimer(callback, milliseconds) {
+            timer.interval = milliseconds;
+            timer.repeat = false;
+            timer.triggered.connect(callback);
+            timer.start();
+        }
+
+        function stopTimer(callback) {
+            timer.stop();
+            timer.triggered.disconnect(callback);
+        }
+    }
+
+    function disablingBtns() {
+        roomOne.enabled = false
+        roomTwo.enabled = false
+        roomThree.enabled = false
+        roomFour.enabled = false
+        roomFive.enabled = false
+        roomSix.enabled = false
+    }
+
     Rectangle {
         id: roomButtons
         color: "#1a1724"
         radius: 10
         anchors.fill: parent
+        clip: true
+
         CustomButton {
-            id: oneRoom
-            text: "Room 01"
+            id: roomOne
+            text: "FH101"
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
@@ -26,13 +56,19 @@ Item {
             anchors.topMargin: 0
             anchors.leftMargin: 0
             onClicked: {
-                animationMenu.running = true
+                if (roomNumber === '') {
+                    animationMenu.running = true
+                }
+                roomNumber = 'FH101'
+                roomText.text = roomNumber
+                Room.checkAvailability(roomText.text)
+                disablingBtns()
             }
         }
 
         CustomButton {
-            id: twoRoom
-            text: "Room 02"
+            id: roomTwo
+            text: "FH102"
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
@@ -47,13 +83,19 @@ Item {
             anchors.bottomMargin: parent.height/2
             anchors.topMargin: 0
             onClicked: {
-                animationMenu.running = true
+                if (roomNumber === '') {
+                    animationMenu.running = true
+                }
+                roomNumber = 'FH102'
+                roomText.text = roomNumber
+                Room.checkAvailability(roomText.text)
+                disablingBtns()
             }
         }
 
         CustomButton {
-            id: threeRoom
-            text: "Room 03"
+            id: roomThree
+            text: "FH103"
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
@@ -68,13 +110,19 @@ Item {
             anchors.topMargin: 0
             anchors.rightMargin: 0
             onClicked: {
-                animationMenu.running = true
+                if (roomNumber === '') {
+                    animationMenu.running = true
+                }
+                roomNumber = 'FH103'
+                roomText.text = roomNumber
+                Room.checkAvailability(roomText.text)
+                disablingBtns()
             }
         }
 
         CustomButton {
-            id: fourRoom
-            text: "Room 04"
+            id: roomFour
+            text: "FH201"
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
@@ -89,13 +137,19 @@ Item {
             anchors.bottomMargin: 0
             anchors.leftMargin: 0
             onClicked: {
-                animationMenu.running = true
+                if (roomNumber === '') {
+                    animationMenu.running = true
+                }
+                roomNumber = 'FH201'
+                roomText.text = roomNumber
+                Room.checkAvailability(roomText.text)
+                disablingBtns()
             }
         }
 
         CustomButton {
-            id: fiveRoom
-            text: "Room 05"
+            id: roomFive
+            text: "FH202"
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
@@ -110,13 +164,19 @@ Item {
             anchors.leftMargin: parent.width/3
             anchors.bottomMargin: 0
             onClicked: {
-                animationMenu.running = true
+                if (roomNumber === '') {
+                    animationMenu.running = true
+                }
+                roomNumber = 'FH202'
+                roomText.text = roomNumber
+                Room.checkAvailability(roomText.text)
+                disablingBtns()
             }
         }
 
         CustomButton {
-            id: sixRoom
-            text: "Room 06"
+            id: roomSix
+            text: "FH203"
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
@@ -131,101 +191,179 @@ Item {
             anchors.bottomMargin: 0
             anchors.rightMargin: 0
             onClicked: {
-                animationMenu.running = true
+                if (roomNumber === '') {
+                    animationMenu.running = true
+                }
+                roomNumber = 'FH203'
+                roomText.text = roomNumber
+                Room.checkAvailability(roomText.text)
+                disablingBtns()
+            }
+        }
+
+        Rectangle {
+            id: information
+            x: 1609
+            y: 302
+            width: 10
+            height: 260
+            color: "#66646d"
+            radius: 10
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: -10
+            clip: true
+
+            PropertyAnimation {
+                id: animationMenu
+                target: information
+                property: "width"
+                to: if (information.width === 10) return 370; else return 10
+                duration: 1000
+                easing.type: Easing.OutQuint
+            }
+
+            CustomButton {
+                id: backBtn
+                width: 113
+                height: 58
+                text: "Back >"
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
+                colorPressed: "#00000000"
+                colorMouseOver: "#00000000"
+                colorDefault: "#00000000"
+                font.bold: true
+                font.pointSize: 12
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        roomNumber = ''
+                        animationMenu.running = true
+
+                        timer.startTimer(function ablingBtns() {
+                                roomOne.enabled = true
+                                roomTwo.enabled = true
+                                roomThree.enabled = true
+                                roomFour.enabled = true
+                                roomFive.enabled = true
+                                roomSix.enabled = true
+                            }, 1000)
+                        timer.stopTimer(ablingBtns)
+                    }
+                }
+            }
+
+            Label {
+                id: statusLabel
+                width: 57
+                height: 23
+                color: "#ffffff"
+                text: qsTr("Status:")
+                anchors.left: parent.left
+                anchors.top: roomLabel.bottom
+                font.bold: true
+                anchors.leftMargin: 30
+                anchors.topMargin: 20
+                font.pointSize: 12
+            }
+
+            Label {
+                id: statusText
+                width: 66
+                height: 23
+                text: qsTr("Available")
+                anchors.verticalCenter: statusLabel.verticalCenter
+                anchors.left: statusLabel.right
+                anchors.leftMargin: 20
+                font.pointSize: 12
+            }
+
+            CustomTextField {
+                id: purposeText
+                x: 31
+                anchors.top: statusLabel.bottom
+                anchors.topMargin: 20
+                font.pointSize: 12
+                placeholderText: "Purpose"
+            }
+
+            CustomButton {
+                id: reserveBtn
+                x: 134
+                width: 94
+                height: 33
+                text: "Reserve"
+                anchors.top: purposeText.bottom
+                anchors.topMargin: 20
+                font.bold: true
+                font.pointSize: 12
+                onClicked: {
+                    Room.borrow(roomText.text, purposeText.text)
+                    animationMenu.running = true
+                    roomNumber = ''
+
+                    timer.startTimer(function ablingBtns() {
+                            roomOne.enabled = true
+                            roomTwo.enabled = true
+                            roomThree.enabled = true
+                            roomFour.enabled = true
+                            roomFive.enabled = true
+                            roomSix.enabled = true
+                        }, 1000)
+                    timer.stopTimer(ablingBtns)
+                }
+            }
+
+
+            Label {
+                id: roomLabel
+                color: "#ffffff"
+                text: qsTr("Room:")
+                anchors.left: parent.left
+                anchors.right: statusLabel.right
+                anchors.top: parent.top
+                anchors.leftMargin: 34
+                anchors.topMargin: 65
+                anchors.rightMargin: 0
+                font.bold: true
+                font.pointSize: 12
+            }
+
+            Label {
+                id: roomText
+                y: 49
+                color: "#ffffff"
+                text: qsTr("Room Number")
+                anchors.verticalCenter: roomLabel.verticalCenter
+                anchors.left: roomLabel.right
+                anchors.leftMargin: 20
+                font.bold: false
+                font.pointSize: 12
             }
         }
     }
-
-    Rectangle {
-        id: information
-        width: 0
-        height: 221
-        color: "#66646d"
-        radius: 10
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.right: parent.right
-        anchors.rightMargin: 0
-        clip: true
-
-        PropertyAnimation {
-            id: animationMenu
-            target: information
-            property: "width"
-            to: if (information.width === 0) return 360; else return 0
-            duration: 1000
-            easing.type: Easing.OutQuint
+    Connections {
+        target: Room
+        function onCheckAvailabilitySignal(x) {
+            if (x === 0) {
+                reserveBtn.enabled = false
+            } else {
+                reserveBtn.enabled = true
+            }
         }
-
-        CustomButton {
-            id: customButton
-            width: 113
-            height: 58
-            text: "Back >"
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.leftMargin: 0
-            anchors.topMargin: 0
-            colorPressed: "#00000000"
-            colorMouseOver: "#00000000"
-            colorDefault: "#00000000"
-            font.bold: true
-            font.pointSize: 12
-        }
-
-        Label {
-            id: label
-            width: 57
-            height: 23
-            color: "#ffffff"
-            text: qsTr("Status:")
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.leftMargin: 30
-            anchors.topMargin: 80
-            font.pointSize: 12
-        }
-
-        Label {
-            id: statusLabel
-            x: 106
-            width: 66
-            height: 23
-            text: qsTr("Available")
-            anchors.top: parent.top
-            anchors.topMargin: 80
-            font.pointSize: 12
-        }
-
-        CustomButton {
-            id: reserveBtn
-            x: 134
-            y: 210
-            width: 94
-            height: 33
-            text: "Reserve"
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
-            font.bold: false
-            font.pointSize: 12
-        }
-
-        CustomTextField {
-            id: purposeText
-            x: 31
-            y: 162
-            anchors.bottom: reserveBtn.top
-            anchors.bottomMargin: 10
-            font.pointSize: 12
-            placeholderText: "Purpose"
-        }
-
     }
 }
 
 
 
+
+
 /*##^##
 Designer {
-    D{i:0;autoSize:true;formeditorZoom:0.66;height:864;width:1609}D{i:12}
+    D{i:0;autoSize:true;formeditorZoom:1.33;height:864;width:1609}
 }
 ##^##*/
