@@ -1,30 +1,25 @@
-import sys
+import sys, os
+
+# MODULE IMPORTS
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtQml import QQmlApplicationEngine
-from PyQt5.QtCore import QObject,  pyqtSignal, pyqtSlot
 
-class LogIn(QObject):
-    def __init__(self):
-        QObject.__init__(self)
+# SELF CREATED MODULE IMPORTS
+from classes import splashScreen, login
 
-    @pyqtSlot(str, str, result = str)
-    def chooseSoT(self, schoolID, thePassword):
-        if (schoolID == 'admin' and thePassword == ''):
-            engine.load('qml/admin.qml')
-            return '1'
 
+# INSTANCE CLASS
 if __name__ == "__main__":
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
 
-    # Instance of a Python object
-    login = LogIn()
+    SplashScreen = splashScreen.splashScreen()
 
-    # Expose the python object to QML
-    engine.rootContext().setContextProperty('login', login)
+    engine.rootContext().setContextProperty("SplashScreen", SplashScreen)
 
-    engine.load('qml/admin.qml')
-
+    engine.load(os.path.join(os.path.dirname(__file__), "qml/main.qml"))
+    
     if not engine.rootObjects():
         sys.exit(-1)
     sys.exit(app.exec_())
+    # LOADS THE SPLASH SCREEN UI
