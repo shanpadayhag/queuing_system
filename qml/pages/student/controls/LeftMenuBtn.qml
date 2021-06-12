@@ -6,21 +6,18 @@ Button{
     id: btnLeftMenu
     text: qsTr("Left Menu Text")
 
-    // CUSTOM PROPERTIES
     property url btnIconSource: "../../imgs/svg_images/home_icon.svg"
-    property color btnColorDefault: "#252526"
-    property color btnColorMouseOver: "#6D6D6E"
-    property color btnColorClicked: "#181819"
+    property color btnColorDefault: "#1c1d20"
+    property color btnColorMouseOver: "#23272E"
+    property color btnColorClicked: "#00a1f1"
     property int iconWidth: 18
     property int iconHeight: 18
-    property color activeMenuColor: "#55aaff"
-    property color activeMenuColorRight: "#ffffff"
+    property color activeMenuColor: "#27CA41"
     property bool isActiveMenu: false
 
     QtObject{
         id: internal
 
-        // MOUSE OVER AND CLICK CHANGE COLOR
         property var dynamicColor: if(btnLeftMenu.down){
                                        btnLeftMenu.down ? btnColorClicked : btnColorDefault
                                    } else {
@@ -43,10 +40,9 @@ Button{
                 bottom: parent.bottom
             }
             color: activeMenuColor
-            width: 5
+            width: 6
             visible: isActiveMenu
         }
-
     }
 
     contentItem: Item{
