@@ -11,9 +11,103 @@ Item {
         clip: true
 
         Rectangle {
+            id: studentListRectangle
+            color: "#00000000"
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: buttonAreaRectangle.top
+            clip: true
+            anchors.rightMargin: 100
+            anchors.bottomMargin: 0
+            anchors.leftMargin: 100
+            anchors.topMargin: 100
+
+            ScrollView {
+                id: scrollView
+                anchors.fill: parent
+                clip: true
+
+                ListModel {
+                    id: modelName
+                }
+
+                Component {
+                    id: delegateName
+                    Item {
+                        width: listViewName.width
+                        height: 30
+                        Text {
+                            id: namename
+                            text: studentName
+                            anchors.left: parent.left
+                            height: 30
+                            color: "#ffffff"
+                            verticalAlignment: Text.AlignVCenter
+                            anchors.leftMargin: 10
+                            font.pointSize: 12
+                        }
+                        Text {
+                            id: idid
+                            text: studentID
+                            anchors.left: parent.left
+                            height: 30
+                            color: "#ffffff"
+                            verticalAlignment: Text.AlignVCenter
+                            anchors.leftMargin: 300
+                            font.pointSize: 12
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+                                listViewName.currentIndex = index
+                                nameDisplay.text = namename.text
+                                schoolIDDisplay.text = idid.text
+                            }
+                        }
+                    }
+                }
+
+                ListView {
+                    id: listViewName
+                    anchors.fill: parent
+                    anchors.rightMargin: 20
+                    anchors.leftMargin: 20
+                    anchors.bottomMargin: 20
+                    anchors.topMargin: 20
+                    focus: true
+
+                    model: modelName
+                    delegate: delegateName
+
+                    highlight: Rectangle {
+                        width: listViewName.width-20
+                        color: '#313131'
+                        radius: 10
+                    }
+                }
+            }
+        }
+    
+
+        Label {
+            id: label
+            x: 722
+            color: "#ffffff"
+            text: qsTr("Student Accounts")
+            anchors.top: parent.top
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.pointSize: 12
+            anchors.topMargin: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+
+        Rectangle {
             id: addAreaRectangle
             width: 20
-            height: 284
+            height: 377
             color: "#616269"
             radius: 20
             anchors.verticalCenter: parent.verticalCenter
@@ -25,7 +119,7 @@ Item {
                 id: addAnimationMenu
                 target: addAreaRectangle
                 property: "width"
-                to: if (addAreaRectangle.width === 20) return 360; else return 20
+                to: if (addAreaRectangle.width === 20) return 420; else return 20
                 duration: 1000
                 easing.type: Easing.OutQuint
             }
@@ -39,15 +133,27 @@ Item {
                 anchors.left: parent.left
                 anchors.bottom: parent.bottom
                 anchors.leftMargin: 112
-                anchors.bottomMargin: 50
+                anchors.bottomMargin: 25
                 font.pointSize: 12
+                onClicked: {
+                    if (addPasswordText.text === addCPasswordText.text) {
+                        AdminUI.addToDatabase(
+                            addNameText.text, 
+                            addSIDText.text, 
+                            addPasswordText.text,
+                            'studentinfo',
+                            'student'
+                        )
+                        AdminUI.callTheFunction('studentinfo')
+                    }
+                }
             }
 
             CustomTextField {
                 id: addNameText
                 y: 332
                 anchors.left: parent.left
-                anchors.bottom: addProgramText.top
+                anchors.bottom: addSIDText.top
                 placeholderText: "Name"
                 font.pointSize: 12
                 anchors.leftMargin: 50
@@ -55,14 +161,36 @@ Item {
             }
 
             CustomTextField {
-                id: addProgramText
+                id: addSIDText
                 y: 450
                 anchors.left: parent.left
-                anchors.bottom: addConfirmButton.top
-                placeholderText: "Program"
+                anchors.bottom: addPasswordText.top
+                placeholderText: "School ID"
                 font.pointSize: 12
                 anchors.leftMargin: 50
                 anchors.bottomMargin: 25
+            }
+
+            CustomTextField {
+                id: addPasswordText
+                y: 450
+                anchors.left: parent.left
+                anchors.bottom: addCPasswordText.top
+                anchors.leftMargin: 50
+                anchors.bottomMargin: 25
+                placeholderText: "Password"
+                font.pointSize: 12
+            }
+
+            CustomTextField {
+                id: addCPasswordText
+                y: 450
+                anchors.left: parent.left
+                anchors.bottom: addConfirmButton.top
+                anchors.leftMargin: 50
+                anchors.bottomMargin: 25
+                placeholderText: "Confirm Password"
+                font.pointSize: 12
             }
 
             CustomButton {
@@ -80,6 +208,8 @@ Item {
                 font.bold: true
                 font.pointSize: 12
             }
+
+
         }
 
         Rectangle {
@@ -97,7 +227,7 @@ Item {
                 id: removeAnimationMenu
                 target: removeAreaRectangle
                 property: "width"
-                to: if (removeAreaRectangle.width === 20) return 360; else return 20
+                to: if (removeAreaRectangle.width === 20) return 420; else return 20
                 duration: 1000
                 easing.type: Easing.OutQuint
             }
@@ -113,6 +243,14 @@ Item {
                 anchors.leftMargin: 122
                 anchors.bottomMargin: 50
                 font.pointSize: 12
+                onClicked: {
+                    AdminUI.removeFromDatabase(
+                        schoolIDDisplay.text, 
+                        'studentinfo',
+                        'student'
+                    )
+                    AdminUI.callTheFunction('studentinfo')
+                }
             }
 
             Label {
@@ -121,7 +259,7 @@ Item {
                 color: "#ffffff"
                 text: "Name: "
                 anchors.left: parent.left
-                anchors.bottom: removeProgramLabel.top
+                anchors.bottom: removeSIDLabel.top
                 font.bold: true
                 font.pointSize: 12
                 anchors.leftMargin: 50
@@ -129,10 +267,10 @@ Item {
             }
 
             Label {
-                id: removeProgramLabel
+                id: removeSIDLabel
                 y: 450
                 color: "#ffffff"
-                text: "Program: "
+                text: "School ID: "
                 anchors.left: parent.left
                 anchors.bottom: removeConfirmButton.top
                 font.bold: true
@@ -161,7 +299,7 @@ Item {
                 id: nameDisplay
                 y: 140
                 color: "#ffffff"
-                text: qsTr("Label")
+                text: qsTr("Student Name")
                 anchors.verticalCenter: removeNameLabel.verticalCenter
                 anchors.left: removeNameLabel.right
                 anchors.leftMargin: 10
@@ -169,12 +307,12 @@ Item {
             }
 
             Label {
-                id: programDisplay
+                id: schoolIDDisplay
                 y: 184
                 color: "#ffffff"
-                text: qsTr("Label")
-                anchors.verticalCenter: removeProgramLabel.verticalCenter
-                anchors.left: removeProgramLabel.right
+                text: qsTr("School ID")
+                anchors.verticalCenter: removeSIDLabel.verticalCenter
+                anchors.left: removeSIDLabel.right
                 anchors.leftMargin: 10
                 font.pointSize: 12
             }
@@ -204,7 +342,6 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: {
                     addAnimationMenu.running = true
-                    removeAnimationMenu.running = true
                 }
             }
 
@@ -219,169 +356,28 @@ Item {
                 anchors.horizontalCenterOffset: 140
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: {
-                    addAnimationMenu.running = true
                     removeAnimationMenu.running = true
                 }
             }
         }
+    }
 
-        Rectangle {
-            id: rectangle1
-            color: "#00000000"
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.bottom: buttonAreaRectangle.top
-            anchors.bottomMargin: 0
-            anchors.rightMargin: 0
-            anchors.leftMargin: 0
-            anchors.topMargin: 0
-
-            Rectangle {
-                id: studentListRectangle
-                color: "#00000000"
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.rightMargin: parent.width/2
-                anchors.bottomMargin: 0
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-
-                ScrollView {
-                    id: scrollView
-                    anchors.fill: parent
-                    contentHeight: modelName.height
-                    clip: true
-
-                    ListModel {
-                        id: modelName
-                        ListElement {name: 'Lowee Oliva'; status: 1}
-                        ListElement {name: 'Rangie Obispo'; status: 1}
-                        ListElement {name: 'Elvira Yaneza'; status: 0}
-                        ListElement {name: 'Patrick Mack'; status: 1}
-                        ListElement {name: 'Jordan Canete'; status: 0}
-                        ListElement {name: 'Jessie Christopher Lagrosas'; status: 0}
-                        ListElement {name: 'Cristina Amor Cajilla'; status: 1}
-                        ListElement {name: 'Florence Reyes'; status: 0}
-                        ListElement {name: 'Maria Ramilla Jimenez'; status: 1}
-                        ListElement {name: 'Dr. Meldie Apag'; status: 0}
-                    }
-
-                    Component {
-                        id: delegateName
-                        Item {
-                            width: parent.width
-                            height: 30
-                            Text {
-                                text: name
-                                anchors.left: parent.left
-                                height: 30
-                                color: "#ffffff"
-                                verticalAlignment: Text.AlignVCenter
-                                anchors.leftMargin: 10
-                                font.pointSize: 12
-                            }
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: {
-                                    listViewName.currentIndex = index
-                                }
-                            }
-                        }
-                    }
-
-                    ListView {
-                        id: listViewName
-                        anchors.fill: parent
-                        anchors.rightMargin: 20
-                        anchors.leftMargin: 20
-                        anchors.bottomMargin: 20
-                        anchors.topMargin: 20
-                        model: modelName
-                        delegate: delegateName
-                        highlight: Rectangle {
-                            width: parent.width-20
-                            color: '#313131'
-                            radius: 10
-                        }
-                    }
-                }
-            }
-
-            Rectangle {
-                id: instructorListRectangle
-                color: "#00000000"
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.rightMargin: 0
-                anchors.bottomMargin: 0
-                anchors.leftMargin: parent.width/2
-                anchors.topMargin: 0
-
-                ScrollView {
-                    id: scrollViewInstructor
-                    anchors.fill: parent
-                    contentHeight: modelNameInstructor.height
-                    clip: true
-
-                    ListModel {
-                        id: modelNameInstructor
-                        ListElement {name: 'Lowee Oliva'; status: 1}
-                        ListElement {name: 'Rangie Obispo'; status: 1}
-                        ListElement {name: 'Elvira Yaneza'; status: 0}
-                        ListElement {name: 'Patrick Mack'; status: 1}
-                        ListElement {name: 'Jordan Canete'; status: 0}
-                        ListElement {name: 'Jessie Christopher Lagrosas'; status: 0}
-                        ListElement {name: 'Cristina Amor Cajilla'; status: 1}
-                        ListElement {name: 'Florence Reyes'; status: 0}
-                        ListElement {name: 'Maria Ramilla Jimenez'; status: 1}
-                        ListElement {name: 'Dr. Meldie Apag'; status: 0}
-                    }
-
-                    Component {
-                        id: delegateNameInstructor
-                        Item {
-                            width: parent.width
-                            height: 30
-                            Text {
-                                text: name
-                                anchors.left: parent.left
-                                height: 30
-                                color: "#ffffff"
-                                verticalAlignment: Text.AlignVCenter
-                                anchors.leftMargin: 10
-                                font.pointSize: 12
-                            }
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: {
-                                    listViewNameInstructor.currentIndex = index
-                                }
-                            }
-                        }
-                    }
-
-                    ListView {
-                        id: listViewNameInstructor
-                        anchors.fill: parent
-                        anchors.rightMargin: 20
-                        anchors.leftMargin: 20
-                        anchors.bottomMargin: 20
-                        anchors.topMargin: 20
-                        model: modelNameInstructor
-                        delegate: delegateNameInstructor
-                        highlight: Rectangle {
-                            width: parent.width-20
-                            color: '#313131'
-                            radius: 10
-                        }
-                    }
-                }
-            }
+    Connections {
+        target: AdminUI
+        function onCallTheFunctionSignal(iname, iid) {
+            modelName.append({'studentName': iname, 'studentID': iid})
+        }
+        function onClearTheModelSignal() {
+            modelName.clear()
+        }
+    }
+    Component.onCompleted: {
+        AdminUI.callTheFunction('studentinfo');
+        try {
+            nameDisplay.text = modelName.get(0).studentName
+            schoolIDDisplay.text = modelName.get(0).studentID
+        } catch (err){
+            null
         }
     }
 }

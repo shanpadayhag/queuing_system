@@ -2,8 +2,10 @@ import QtQuick 2.0
 import QtQuick.Controls 2.15
 
 Switch {
+
+    property bool checked: true
+
         id: control
-        checked: true
 
         indicator: Rectangle {
             implicitWidth: 48
@@ -11,11 +13,11 @@ Switch {
             x: control.width - width - control.rightPadding
             y: parent.height / 2 - height / 2
             radius: 13
-            color: control.checked ? "#27CA41" : "#616269"
+            color: checked ? "#27CA41" : "#616269"
             border.color: "#00000000"
 
             Rectangle {
-                x: control.checked ? parent.width - width : 0
+                x: checked ? parent.width - width : 0
                 width: 26
                 height: 26
                 radius: 13

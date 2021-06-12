@@ -180,34 +180,33 @@ Rectangle{
                 }
             }
             dayDelegate: Item {
-                            Rectangle {
-                                id: rect
-                                anchors.fill: parent
-                                color: '#13141F'
+                Rectangle {
+                    id: rect
+                    anchors.fill: parent
+                    color: '#13141F'
 
-                                Label {
-                                    id: dayDelegateText
-                                    text: styleData.date.getDate()
-                                    anchors.centerIn: parent
-                                    horizontalAlignment: Text.AlignRight
-                                    font.pixelSize: 12
-                                    color: '#FFFFFF'
-                                    font.bold: styleData.selected
-                                }
-                                MouseArea {
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    width: styleData.selected ? parent.width / 2 : 0
-                                    height: styleData.selected ? parent.height / 2 : 0
-                                    Rectangle {
-                                        anchors.fill: parent
-                                        color: "transparent"
-                                        border.color: "#FFFFFF"
-                                    }
-                                }
-                            }
+                    Label {
+                        id: dayDelegateText
+                        text: styleData.date.getDate()
+                        anchors.centerIn: parent
+                        horizontalAlignment: Text.AlignRight
+                        font.pointSize: 12
+                        color: '#FFFFFF'
+                        font.bold: styleData.selected
+                    }
+                    MouseArea {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: styleData.selected ? parent.width / 2 : 0
+                        height: styleData.selected ? parent.height / 2 : 0
+                        Rectangle {
+                            anchors.fill: parent
+                            color: "transparent"
+                            border.color: "#FFFFFF"
                         }
-
+                    }
+                }
+            }
         }
     }
 }

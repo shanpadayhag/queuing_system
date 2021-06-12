@@ -20,8 +20,6 @@ Item {
             anchors.leftMargin: 0
             anchors.bottomMargin: 0
 
-
-
             ScrollView {
                 id: scrollView
                 anchors.fill: parent
@@ -31,15 +29,6 @@ Item {
                 ListModel {
                     id: modelName
                     ListElement {name: 'Lowee Oliva'; status: 1}
-                    ListElement {name: 'Rangie Obispo'; status: 1}
-                    ListElement {name: 'Elvira Yaneza'; status: 0}
-                    ListElement {name: 'Patrick Mack'; status: 1}
-                    ListElement {name: 'Jordan Canete'; status: 0}
-                    ListElement {name: 'Jessie Christopher Lagrosas'; status: 0}
-                    ListElement {name: 'Cristina Amor Cajilla'; status: 1}
-                    ListElement {name: 'Florence Reyes'; status: 0}
-                    ListElement {name: 'Maria Ramilla Jimenez'; status: 1}
-                    ListElement {name: 'Dr. Meldie Apag'; status: 0}
                 }
 
                 Component {
@@ -112,16 +101,6 @@ Item {
                 font.pointSize: 12
             }
 
-            CustomTextField {
-                id: customTextField1
-                x: 67
-                y: 394
-                width: 384
-                height: 50
-                placeholderText: "Number of person needed for the task"
-                font.pointSize: 12
-            }
-
             TextArea {
                 id: taskDetails
                 x: 152
@@ -163,13 +142,15 @@ Item {
                 id: listViewLabel
                 x: 550
                 y: 81
-                text: qsTr("Label")
+                color: "#ffffff"
+                text: qsTr("Special Services")
+                anchors.verticalCenter: parent.verticalCenter
+                font.bold: true
+                font.pointSize: 12
+                anchors.horizontalCenter: parent.horizontalCenter
             }
         }
-
-
-    }
-
+    }//modelName.append({'id': , 'name': , 'specialServiceName'})
 }
 
 /*##^##
