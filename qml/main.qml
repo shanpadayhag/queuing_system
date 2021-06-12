@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Timeline 1.0
+import "ui"
 
 Window {
     id: window
@@ -27,12 +28,16 @@ Window {
             timer.triggered.disconnect(callback);
         }
     }
+    
+    function done() {
+        qmlConnections.openWindow(SplashScreen.userInterface())
+        window.close()
+    }
 
     Rectangle {
         id: rectangle1
         width: 543
         height: 334
-        opacity: 1
         color: "#0b131c"
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
@@ -64,9 +69,9 @@ Window {
         Label {
             id: label1
             text: "BS Entertainment and Multimedia Computing"
-            font.pointSize: 8
             color: "#FFFFFF"
-            font.letterSpacing: 2
+            font.pixelSize: 13
+            font.letterSpacing: 1
             anchors.top: label.bottom
             anchors.topMargin: 10
             anchors.left: parent.left
@@ -132,15 +137,18 @@ Window {
             }
         }
     }
+
+    QMLConnections {
+        id: qmlConnections
+    }
+
     Connections {
         target: SplashScreen
     }
 
     Component.onCompleted: {
-        timer.startTimer(function done() {
-            SplashScreen.userInterface();
-            window.close()
-        }, 4500)
-        timer.stopTimer(done())
+        SplashScreen.keepMeLoggedIn()
+        // timer.startTimer(done, 6000)
+        timer.startTimer(done, 0)
     }
 }

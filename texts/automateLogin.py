@@ -1,41 +1,32 @@
 # IMPORT MODULES
 import os
 
+from classes import database
+
 class automateLogin:
     def __init__(self):
-        self.idText = None
-        self.passcodeText = None
-        self.typeText = None
-
-    def getID(self):
-        return self.idText
-
-    def getPasscode(self):
-        return self.passcodeText
-
-    def getType(self):
-        return self.typeText
+        pass
 
     def keepMeLoggedIn(self):
-        # GETS THE FILE DIRECTORY OF THE TEXT FILE
         txtLocationAndName = os.path.join(
-            os.path.dirname(__file__), 
-            "../texts/fileDirectoryText.txt"
+            os.getcwd(),
+            r"texts\\fileDirectoryText.txt"
         )
 
-        # READS THE CONTENT OF THE TEXT FILE
         txtFile = open(
-            txtLocationAndName, 
+            txtLocationAndName,
             "r"
         )
+
         for x in txtFile:
-            self.idText, self.passcodeText, self.typeText = x.split(',')
-            self.typeText.strip()
+            text = x.split(',')
         txtFile.close()
 
-        # CHECKS IN THE DATABASE IF THE CREDENTIALS EXISTED
-        # RETURNS THE VALUES
-        if (int(self.idText) == 1 and self.passcodeText == "admin"):
-            return True
+        sql_statement = "SELECT id_school FROM accounts WHERE id_school = %s and password = %s"
+        sql_data = (text[1], text[4])
+        sql_list = database.database().selectone(sql_statement, sql_data)
+
+        if sql_list != "-1":
+            return True  # Turn false to always go to log in
         else:
             return False
