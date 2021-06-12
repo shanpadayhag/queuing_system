@@ -1,3 +1,7 @@
 __pycache__
 classes/__pycache__
+classes/adminFunctions/__pycache__
+classes/instrctorFunctions/__pycache__
+classes/studentFunctions/__pycache__
 texts/__pycache__
+img/user_imgs/*

@@ -1,73 +1,62 @@
 import sys, os
 
-from PyQt5.QtGui import QGuiApplication
-from PyQt5.QtQml import QQmlApplicationEngine
 from PyQt5.QtCore import QObject, pyqtSignal as Signal, pyqtSlot as Slot
+
+from classes import database, create, queue
+from classes.adminFunctions import account, admin, apply, home, instructor, offer, request, roomreserve, setAppointment, student
 
 class login(QObject):
     def __init__(self):
         QObject.__init__(self)
+        self.fromDB = database.database()
+        self.sqlString = None
+        self.sqlData = None
+        self.sqlList = None
+
+    def keepMeLoggedIn(self, id, school_id, name, type, passcode, imgurl):
+        txtString = str(id) + ","  + school_id + ","  + name + "," + type + "," + passcode + "," + imgurl + ","
+        txtLocationAndName = os.path.join(
+            os.getcwd(), 
+            r"texts/fileDirectoryText.txt"
+        )
+        txtFile = open(
+            txtLocationAndName, 
+            "w"
+        )
+        txtFile.writelines(txtString)
+        txtFile.close()
     
+    showWindowSignal = Signal()
     @Slot()
-    def admin(self):
-        print("1")
+    def showWindow(self):
+        self.showWindowSignal.emit()
+    
+    _pop_up_signal = Signal(str)
+    @Slot(str)
+    def pop_up(self, message):
+        self._pop_up_signal.emit(message)
 
-class createAccount(QObject):
-    def __init__(self):
-        QObject.__init__(self)
+    accountSignal = Signal(str)
+    @Slot(str, str, result = int)
+    def account(self, id, passcode):
+        self.sqlData = (id,)
+        self.sqlString = "SELECT id_school, password, accounts.id, name, type, imgurl FROM accounts JOIN accountimg ON accounts.id = accountimg.id WHERE id_school = %s"
+        self.sqlList = self.fromDB.selectone(self.sqlString, self.sqlData)
+        if (id == self.sqlList[0] and passcode == self.sqlList[1]):
+            self.keepMeLoggedIn(
+                self.sqlList[2], # id
+                self.sqlList[0], # school_id
+                self.sqlList[3], # name
+                self.sqlList[4], # type 
+                self.sqlList[1], # passcode 
+                self.sqlList[5]  # imgurl
+            )
+            self.accountSignal.emit(self.sqlList[4])
+            return 0
 
-if __name__ == "__main__":
-    pass
-else:
-    pass
-import sys
-from PyQt5.QtCore import QObject,  pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QGuiApplication
-from PyQt5.QtQml import QQmlApplicationEngine
-import classes.dbConnect as dbConnect
-import classes.adminUIFunctions as adminUIFunctions
-import classes.currentAccount as currentAccount
-
-class LogIn(QObject):
-    def __init__(self):
-        QObject.__init__(self)
-
-    def compareToDatabase(self, dbTable, data):
-        return dbConnect.dtbs.compareInDatabase(self, dbTable, data)
-
-    def addToDatabase(self):
-        pass
-
-    @pyqtSlot(str, str, result = str)
-    def chooseSoT(self, schoolID, thePassword):
-        logInInputs = (int(schoolID), thePassword)
-        if (self.compareToDatabase('login', logInInputs) == None):
-            pass
         else:
-            currentAccount.accountID = self.compareToDatabase('login', logInInputs)[0]
-            currentAccount.accountType = self.compareToDatabase('login', logInInputs)[2]
-            if (dbConnect.dtbs.accountType(self, 'login', logInInputs) == 'admin'):
-                engine.load('qml/admin.qml')
-                return 'succeed'
-
-app = QGuiApplication(sys.argv)
-engine = QQmlApplicationEngine()
-
-AdminUI = adminUIFunctions.accounts()
-engine.rootContext().setContextProperty('AdminUI', AdminUI)
-
-AccountDetails = adminUIFunctions.accountDetailsFunction()
-engine.rootContext().setContextProperty('AccountDetails', AccountDetails)
-
-Home = adminUIFunctions.homeFunctions()
-engine.rootContext().setContextProperty('Home', Home)
-
-Room = adminUIFunctions.roomFunctions()
-engine.rootContext().setContextProperty('Room', Room)
-
-Appointment = adminUIFunctions.appointmentFunctions()
-engine.rootContext().setContextProperty('Appointment', Appointment)
-
-Services = adminUIFunctions.servicesFunctions()
-engine.rootContext().setContextProperty('Services', Services)
-
+            if (self.sqlList != "-1"):
+                return 2
+            else:
+                return 3
+                
